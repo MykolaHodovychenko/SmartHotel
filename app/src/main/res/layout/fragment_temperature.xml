@@ -1,0 +1,291 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/main_menu_bar">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp">
+
+        <LinearLayout
+            android:layout_width="275dp"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp">
+
+                <com.isosystems.smarthotel.utils.MenuButton
+                    android:id="@+id/tf_mainhall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/light_button_on"
+                    android:text="Main Hall"
+                    android:textColor="#42392d"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="5dp"
+                    android:textSize="35sp" />
+
+                <com.isosystems.smarthotel.utils.MenuButton
+                    android:id="@+id/tf_balcony"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/light_button_off"
+                    android:text="Balcony"
+                    android:textColor="#ded0ab"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="10dp"
+                    android:textSize="35sp" />
+
+                <com.isosystems.smarthotel.utils.MenuButton
+                    android:id="@+id/tf_bathroom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/light_button_off"
+                    android:text="Bathroom"
+                    android:textColor="#ded0ab"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="10dp"
+                    android:textSize="35sp" />
+
+                <com.isosystems.smarthotel.utils.MenuButton
+                    android:id="@+id/tf_bedroom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/light_button_off"
+                    android:text="Bedroom"
+                    android:textColor="#ded0ab"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="10dp"
+                    android:textSize="35sp" />
+
+                <com.isosystems.smarthotel.utils.MenuButton
+                    android:id="@+id/tf_dressroom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/light_button_off"
+                    android:text="Dressing room"
+                    android:textColor="#ded0ab"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="10dp"
+                    android:textSize="32sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <ProgressBar
+                    android:id="@+id/light_progress"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="600dp"
+                    android:layout_height="600dp"
+                    android:layout_alignParentBottom="false"
+                    android:max="40"
+                    android:progress="60"
+                    android:progressDrawable="@drawable/temp_circular"
+                    android:layout_centerInParent="true"
+                    android:indeterminate="false"
+                    android:rotation="-90"
+                    android:indeterminateOnly="false"
+                    android:secondaryProgress="0" />
+
+                <ImageView
+                    android:id="@+id/center_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="false"
+                    android:layout_alignParentStart="false"
+                    android:layout_alignParentTop="false"
+                    android:layout_centerInParent="true"
+                    android:layout_weight="1"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/temp_round"
+                    android:visibility="visible" />
+
+                <com.isosystems.smarthotel.utils.DegreeTextView
+                    android:id="@+id/light_amount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="false"
+                    android:layout_alignWithParentIfMissing="false"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:paddingTop="222dp"
+                    android:text="0°C"
+                    android:textColor="#ded0ab"
+                    android:textSize="100sp"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="370dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="25dp"
+            android:layout_marginTop="25dp"
+            android:layout_gravity="center"
+            android:gravity="center">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="280dp"
+                    android:layout_height="426dp"
+                    android:baselineAligned="false"
+                    android:layout_weight="1"
+                    android:layout_marginRight="35dp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/fan_up"
+                        android:src="@drawable/temp_up"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:scaleType="fitCenter"
+                        android:cropToPadding="false"
+                        android:baselineAlignBottom="false"
+                        android:adjustViewBounds="false"
+                        android:focusableInTouchMode="false" />
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="fill_parent"
+                        android:id="@+id/imageView4"
+                        android:src="@drawable/fan_center"
+                        android:paddingLeft="0dp"
+                        android:paddingRight="0dp"
+                        android:paddingTop="-1dp"
+                        android:layout_weight="1"
+                        android:scaleType="fitCenter"
+                        android:layout_marginTop="-2dp" />
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/fan_down"
+                        android:src="@drawable/temp_minus"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:scaleType="fitCenter" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="280dp"
+                    android:layout_height="426dp"
+                    android:baselineAligned="false"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:layout_marginLeft="35dp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/temp_up"
+                        android:src="@drawable/temp_up"
+                        android:layout_weight="1"
+                        android:clickable="true" />
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/imageView9"
+                        android:layout_weight="1"
+                        android:src="@drawable/temp_center"
+                        android:layout_marginTop="-2dp" />
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/temp_down"
+                        android:src="@drawable/temp_minus"
+                        android:layout_weight="1"
+                        android:clickable="true" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:orientation="horizontal"
+        android:layout_weight="2"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp">
+
+        <com.isosystems.smarthotel.SwitchButton
+            android:id="@+id/switch_all_light"
+            android:layout_width="275dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/all_lights_on"
+            android:background="@android:color/transparent"
+            android:scaleType="fitCenter"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="false"
+            android:layout_alignParentBottom="false"
+            android:layout_centerVertical="true" />
+
+        <com.isosystems.smarthotel.SwitchButton
+            android:id="@+id/switch_room_light"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/switch_on"
+            android:background="@android:color/transparent"
+            android:scaleType="fitCenter"
+            android:layout_centerHorizontal="true"
+            android:layout_weight="1" />
+
+        <com.isosystems.smarthotel.SwitchButton
+            android:id="@+id/switch_auto_light"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:src="@drawable/auto_off"
+            android:scaleType="fitCenter"
+            android:layout_alignParentRight="true"
+            android:layout_alignWithParentIfMissing="false" />
+    </LinearLayout>
+</LinearLayout>

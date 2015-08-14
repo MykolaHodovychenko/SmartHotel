@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Настройки показателя освещения">
+        <EditTextPreference
+            android:defaultValue="0"
+            android:digits="0123456789"
+            android:inputType="numberDecimal"
+            android:key="light_min"
+            android:summary="Минимальное значение для показателя освещения"
+            android:title="Минимальное значение" />
+        <EditTextPreference
+            android:defaultValue="100"
+            android:digits="0123456789"
+            android:inputType="numberDecimal"
+            android:key="light_max"
+            android:summary="Максимальное значение для показателя освещения"
+            android:title="Максимальное значение" />
+        <EditTextPreference
+            android:defaultValue="10"
+            android:digits="0123456789"
+            android:inputType="numberDecimal"
+            android:key="light_change"
+            android:summary="На сколько будет меняться показатель при однократном нажатии на +/-"
+            android:title="Шаг изменения освещения" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Настройки прогресс-бара и анимации">
+        <EditTextPreference
+            android:defaultValue="20"
+            android:digits="0123456789"
+            android:inputType="numberDecimal"
+            android:key="light_animation_step_duration"
+            android:summary="Время изменения единицы показателя освещенности"
+            android:title="Шаг анимации (мсек)" />
+    </PreferenceCategory>
+</PreferenceScreen>

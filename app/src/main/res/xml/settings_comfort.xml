@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Настройки показателя температуры">
+        <EditTextPreference
+            android:defaultValue="15"
+            android:digits="0123456789"
+            android:inputType="numberDecimal"
+            android:key="comfort_temp_min"
+            android:summary="Минимальное значение для показателя температуы"
+            android:title="Минимальное значение" />
+        <EditTextPreference
+            android:defaultValue="40"
+            android:digits="0123456789"
+            android:inputType="numberDecimal"
+            android:key="comfort_temp_max"
+            android:summary="Максимальное значение для показателя температуры"
+            android:title="Максимальное значение" />
+        <EditTextPreference
+            android:defaultValue="1"
+            android:digits="0123456789"
+            android:inputType="numberDecimal"
+            android:key="comfort_temp_change"
+            android:summary="На сколько будет меняться показатель при однократном нажатии на +/-"
+            android:title="Шаг изменения температуры" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Настройки показателя вентилятора">
+        <EditTextPreference
+            android:defaultValue="0"
+            android:digits="0123456789"
+            android:inputType="numberDecimal"
+            android:key="comfort_fan_min"
+            android:summary="Минимальное значение для показателя вентилятора"
+            android:title="Минимальное значение" />
+        <EditTextPreference
+            android:defaultValue="100"
+            android:digits="0123456789"
+            android:inputType="numberDecimal"
+            android:key="comfort_fan_max"
+            android:summary="Максимальное значение для показателя вентилятора"
+            android:title="Максимальное значение" />
+        <EditTextPreference
+            android:defaultValue="10"
+            android:digits="0123456789"
+            android:inputType="numberDecimal"
+            android:key="comfort_fan_change"
+            android:summary="На сколько будет меняться показатель при однократном нажатии на +/-"
+            android:title="Шаг изменения вентилятора" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Настройки прогресс-бара и анимации">
+        <EditTextPreference
+            android:defaultValue="20"
+            android:digits="0123456789"
+            android:inputType="numberDecimal"
+            android:key="comfort_animation_step_duration"
+            android:summary="Время изменения единицы показателей температуры и вентилятора"
+            android:title="Шаг анимации (мсек)" />
+    </PreferenceCategory>
+</PreferenceScreen>
