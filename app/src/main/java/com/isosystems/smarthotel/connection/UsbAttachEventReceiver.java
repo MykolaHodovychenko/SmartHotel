@@ -3,28 +3,24 @@ package com.isosystems.smarthotel.connection;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
-/**
- * Created by NickGodov on 12.07.2015.
- */
 public class UsbAttachEventReceiver extends Activity {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
+		if (getApplicationContext() == null) finish();
+	}
 
-        if (getApplicationContext() == null) finish();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        Intent intent = getIntent();
-        if (intent!=null){
-            Intent i = new Intent(getApplicationContext(),USBReceiveService.class);
-            startService(i);
-        }
-        finish();
-    }
+	@Override
+	protected void onResume() {
+		super.onResume();
+		Intent intent = getIntent();
+		if (intent!=null){
+			ConnectionManager.staticStartUSBReceiveService(getApplicationContext());
+		}
+		finish();
+	}
 }

@@ -39,7 +39,6 @@ public class FragmentTemperature extends Fragment implements View.OnClickListene
 
     ComfortWindowMode mWindowMode;
 
-    MyApplication mApplication;
 
     UpdatesReceiver mReceiver;
 
@@ -58,6 +57,7 @@ public class FragmentTemperature extends Fragment implements View.OnClickListene
     DegreeTextView mTempAmount;
 
     ImageView mTempUpButton;
+    MyApplication mApplication;
     ImageView mTempDownButton;
 
     ImageView mFanUpButton;
@@ -179,11 +179,6 @@ public class FragmentTemperature extends Fragment implements View.OnClickListene
 
         switchToTempMode();
 
-        updateTempFanValue();
-        updateTempFanAutoValue();
-        updateTempFanSwitchValue();
-        updateTempFanAllSwitch();
-
         return rootView;
     }
 
@@ -247,11 +242,9 @@ public class FragmentTemperature extends Fragment implements View.OnClickListene
     View.OnClickListener mSwitchAllTempFanListener = new View.OnClickListener() {
         public void onClick(View v) {
             int state = (!mApplication.values.mTempFanAllOf) ? 1 : 0;
-            if (((MainActivity) getActivity()).mBoundService != null && ((MainActivity) getActivity()).mBoundService.sendValue(Indexes.TEMPFAN_ALL_OFF, state)) {
+            if (((MainActivity)getActivity()).sendMessage(Indexes.TEMPFAN_ALL_OFF, state)) {
                 mApplication.values.mTempFanAllOf = !mApplication.values.mTempFanAllOf;
                 mAllTempFanSwitchButton.setButtonState(mApplication.values.mTempFanAllOf);
-            } else {
-                Notifications.showErrorCrouton(getActivity(), Globals.NOTIFICATION_NO_CONNECTION);
             }
         }
     };
@@ -261,47 +254,37 @@ public class FragmentTemperature extends Fragment implements View.OnClickListene
             switch (mActiveRoom) {
                 case MainHall:
                     int state = (!mApplication.values.mTempFanMainHallAuto) ? 1 : 0;
-                    if (((MainActivity) getActivity()).mBoundService != null && ((MainActivity) getActivity()).mBoundService.sendValue(Indexes.TEMPFAN_MAINHALL_AUTO, state)) {
+                    if (((MainActivity)getActivity()).sendMessage(Indexes.TEMPFAN_MAINHALL_AUTO, state)) {
                         mApplication.values.mTempFanMainHallAuto = !mApplication.values.mTempFanMainHallAuto;
                         mAutoSwitchButton.setButtonState(mApplication.values.mTempFanMainHallAuto);
-                    } else {
-                        Notifications.showErrorCrouton(getActivity(), Globals.NOTIFICATION_NO_CONNECTION);
                     }
                     break;
                 case Balcony:
                     state = (!mApplication.values.mTempFanBalconyAuto) ? 1 : 0;
-                    if (((MainActivity) getActivity()).mBoundService != null && ((MainActivity) getActivity()).mBoundService.sendValue(Indexes.TEMPFAN_BALCONY_AUTO, state)) {
+                    if (((MainActivity)getActivity()).sendMessage(Indexes.TEMPFAN_BALCONY_AUTO, state)) {
                         mApplication.values.mTempFanBalconyAuto = !mApplication.values.mTempFanBalconyAuto;
                         mAutoSwitchButton.setButtonState(mApplication.values.mTempFanBalconyAuto);
-                    } else {
-                        Notifications.showErrorCrouton(getActivity(), Globals.NOTIFICATION_NO_CONNECTION);
                     }
                     break;
                 case Bathroom:
                     state = (!mApplication.values.mTempFanBathroomAuto) ? 1 : 0;
-                    if (((MainActivity) getActivity()).mBoundService != null && ((MainActivity) getActivity()).mBoundService.sendValue(Indexes.TEMPFAN_BATHROOM_AUTO, state)) {
+                    if (((MainActivity)getActivity()).sendMessage(Indexes.TEMPFAN_BATHROOM_AUTO, state)) {
                         mApplication.values.mTempFanBathroomAuto = !mApplication.values.mTempFanBathroomAuto;
                         mAutoSwitchButton.setButtonState(mApplication.values.mTempFanBathroomAuto);
-                    } else {
-                        Notifications.showErrorCrouton(getActivity(), Globals.NOTIFICATION_NO_CONNECTION);
                     }
                     break;
                 case Bedroom:
                     state = (!mApplication.values.mTempFanBedroomAuto) ? 1 : 0;
-                    if (((MainActivity) getActivity()).mBoundService != null && ((MainActivity) getActivity()).mBoundService.sendValue(Indexes.TEMPFAN_BEDROOM_AUTO, state)) {
+                    if (((MainActivity)getActivity()).sendMessage(Indexes.TEMPFAN_BEDROOM_AUTO, state)) {
                         mApplication.values.mTempFanBedroomAuto = !mApplication.values.mTempFanBedroomAuto;
                         mAutoSwitchButton.setButtonState(mApplication.values.mTempFanBedroomAuto);
-                    } else {
-                        Notifications.showErrorCrouton(getActivity(), Globals.NOTIFICATION_NO_CONNECTION);
                     }
                     break;
                 case DressingRoom:
                     state = (!mApplication.values.mTempFanDressingRoomAuto) ? 1 : 0;
-                    if (((MainActivity) getActivity()).mBoundService != null && ((MainActivity) getActivity()).mBoundService.sendValue(Indexes.TEMPFAN_DRESSING_ROOM_AUTO, state)) {
+                    if (((MainActivity)getActivity()).sendMessage(Indexes.TEMPFAN_DRESSING_ROOM_AUTO, state)) {
                         mApplication.values.mTempFanDressingRoomAuto = !mApplication.values.mTempFanDressingRoomAuto;
                         mAutoSwitchButton.setButtonState(mApplication.values.mTempFanDressingRoomAuto);
-                    } else {
-                        Notifications.showErrorCrouton(getActivity(), Globals.NOTIFICATION_NO_CONNECTION);
                     }
                     break;
             }
@@ -313,47 +296,37 @@ public class FragmentTemperature extends Fragment implements View.OnClickListene
             switch (mActiveRoom) {
                 case MainHall:
                     int state = (!mApplication.values.mTempFanMainHallSwitch) ? 1 : 0;
-                    if (((MainActivity) getActivity()).mBoundService != null && ((MainActivity) getActivity()).mBoundService.sendValue(Indexes.TEMPFAN_MAINHALL_SWITCH, state)) {
+                    if (((MainActivity)getActivity()).sendMessage(Indexes.TEMPFAN_MAINHALL_SWITCH, state)) {
                         mApplication.values.mTempFanMainHallSwitch = !mApplication.values.mTempFanMainHallSwitch;
                         mLightSwitchButton.setButtonState(mApplication.values.mTempFanMainHallSwitch);
-                    } else {
-                        Notifications.showErrorCrouton(getActivity(), Globals.NOTIFICATION_NO_CONNECTION);
                     }
                     break;
                 case Balcony:
                     state = (!mApplication.values.mTempFanBalconySwitch) ? 1 : 0;
-                    if (((MainActivity) getActivity()).mBoundService != null && ((MainActivity) getActivity()).mBoundService.sendValue(Indexes.TEMPFAN_BALCONY_SWITCH, state)) {
+                    if (((MainActivity)getActivity()).sendMessage(Indexes.TEMPFAN_BALCONY_SWITCH, state)) {
                         mApplication.values.mTempFanBalconySwitch = !mApplication.values.mTempFanBalconySwitch;
                         mLightSwitchButton.setButtonState(mApplication.values.mTempFanBalconySwitch);
-                    } else {
-                        Notifications.showErrorCrouton(getActivity(), Globals.NOTIFICATION_NO_CONNECTION);
                     }
                     break;
                 case Bathroom:
                     state = (!mApplication.values.mTempFanBathroomSwitch) ? 1 : 0;
-                    if (((MainActivity) getActivity()).mBoundService != null && ((MainActivity) getActivity()).mBoundService.sendValue(Indexes.TEMPFAN_BATHROOM_SWITCH, state)) {
+                    if (((MainActivity)getActivity()).sendMessage(Indexes.TEMPFAN_BATHROOM_SWITCH, state)) {
                         mApplication.values.mTempFanBathroomSwitch = !mApplication.values.mTempFanBathroomSwitch;
                         mLightSwitchButton.setButtonState(mApplication.values.mTempFanBathroomSwitch);
-                    } else {
-                        Notifications.showErrorCrouton(getActivity(), Globals.NOTIFICATION_NO_CONNECTION);
                     }
                     break;
                 case Bedroom:
                     state = (!mApplication.values.mTempFanBedroomSwitch) ? 1 : 0;
-                    if (((MainActivity) getActivity()).mBoundService != null && ((MainActivity) getActivity()).mBoundService.sendValue(Indexes.TEMPFAN_BEDROOM_SWITCH, state)) {
+                    if (((MainActivity)getActivity()).sendMessage(Indexes.TEMPFAN_BEDROOM_SWITCH, state)) {
                         mApplication.values.mTempFanBedroomSwitch = !mApplication.values.mTempFanBedroomSwitch;
                         mLightSwitchButton.setButtonState(mApplication.values.mTempFanBedroomSwitch);
-                    } else {
-                        Notifications.showErrorCrouton(getActivity(), Globals.NOTIFICATION_NO_CONNECTION);
                     }
                     break;
                 case DressingRoom:
                     state = (!mApplication.values.mTempFanDressingRoomSwitch) ? 1 : 0;
-                    if (((MainActivity) getActivity()).mBoundService != null && ((MainActivity) getActivity()).mBoundService.sendValue(Indexes.TEMPFAN_DRESSING_ROOM_SWITCH, state)) {
+                    if (((MainActivity)getActivity()).sendMessage(Indexes.TEMPFAN_DRESSING_ROOM_SWITCH, state)) {
                         mApplication.values.mTempFanDressingRoomSwitch = !mApplication.values.mTempFanDressingRoomSwitch;
                         mLightSwitchButton.setButtonState(mApplication.values.mTempFanDressingRoomSwitch);
-                    } else {
-                        Notifications.showErrorCrouton(getActivity(), Globals.NOTIFICATION_NO_CONNECTION);
                     }
                     break;
             }
@@ -545,59 +518,38 @@ public class FragmentTemperature extends Fragment implements View.OnClickListene
     private void setTempAmount(boolean increase) {
         switch (mActiveRoom) {
             case MainHall:
-
                 int new_value = calculateNewTempValue(mApplication.values.mTempMainHallAmount, increase);
-                if (((MainActivity) getActivity()).mBoundService != null && ((MainActivity) getActivity()).mBoundService.sendValue(Indexes.TEMP_MAINHALL, new_value)) {
+                if (((MainActivity)getActivity()).sendMessage(Indexes.TEMP_MAINHALL, new_value)) {
                     mApplication.values.mTempMainHallAmount =
                             changeTempAmount(mApplication.values.mTempMainHallAmount, increase);
-                } else {
-                    Notifications.showErrorCrouton(getActivity(), Globals.NOTIFICATION_NO_CONNECTION);
                 }
-
-
                 break;
             case Balcony:
-
                 new_value = calculateNewTempValue(mApplication.values.mTempBalconyAmount, increase);
-                if (((MainActivity) getActivity()).mBoundService != null && ((MainActivity) getActivity()).mBoundService.sendValue(Indexes.TEMP_BALCONY, new_value)) {
+                if (((MainActivity)getActivity()).sendMessage(Indexes.TEMP_BALCONY, new_value)) {
                     mApplication.values.mTempBalconyAmount =
                             changeTempAmount(mApplication.values.mTempBalconyAmount, increase);
-                } else {
-                    Notifications.showErrorCrouton(getActivity(), Globals.NOTIFICATION_NO_CONNECTION);
                 }
-
                 break;
             case Bathroom:
-
                 new_value = calculateNewTempValue(mApplication.values.mTempBathroomAmount, increase);
-                if (((MainActivity) getActivity()).mBoundService != null && ((MainActivity) getActivity()).mBoundService.sendValue(Indexes.TEMP_BATHROOM, new_value)) {
+                if (((MainActivity)getActivity()).sendMessage(Indexes.TEMP_BATHROOM, new_value)) {
                     mApplication.values.mTempBathroomAmount =
                             changeTempAmount(mApplication.values.mTempBathroomAmount, increase);
-                } else {
-                    Notifications.showErrorCrouton(getActivity(), Globals.NOTIFICATION_NO_CONNECTION);
                 }
-
                 break;
             case Bedroom:
-
                 new_value = calculateNewTempValue(mApplication.values.mTempBedroomAmount, increase);
-                if (((MainActivity) getActivity()).mBoundService != null && ((MainActivity) getActivity()).mBoundService.sendValue(Indexes.TEMP_BEDROOM, new_value)) {
+                if (((MainActivity)getActivity()).sendMessage(Indexes.TEMP_BEDROOM, new_value)) {
                     mApplication.values.mTempBedroomAmount =
                             changeTempAmount(mApplication.values.mTempBedroomAmount, increase);
-                } else {
-                    Notifications.showErrorCrouton(getActivity(), Globals.NOTIFICATION_NO_CONNECTION);
                 }
-
-
                 break;
             case DressingRoom:
-
                 new_value = calculateNewTempValue(mApplication.values.mTempDressingRoomAmount, increase);
-                if (((MainActivity) getActivity()).mBoundService != null && ((MainActivity) getActivity()).mBoundService.sendValue(Indexes.TEMP_DRESSING_ROOM, new_value)) {
+                if (((MainActivity)getActivity()).sendMessage(Indexes.TEMP_DRESSING_ROOM, new_value)) {
                     mApplication.values.mTempDressingRoomAmount =
                             changeTempAmount(mApplication.values.mTempDressingRoomAmount, increase);
-                } else {
-                    Notifications.showErrorCrouton(getActivity(), Globals.NOTIFICATION_NO_CONNECTION);
                 }
         }
     }
@@ -606,47 +558,37 @@ public class FragmentTemperature extends Fragment implements View.OnClickListene
         switch (mActiveRoom) {
             case MainHall:
                 int new_value = calculateNewFanValue(mApplication.values.mFanMainHallAmount, increase);
-                if (((MainActivity) getActivity()).mBoundService != null && ((MainActivity) getActivity()).mBoundService.sendValue(Indexes.FAN_MAINHALL, new_value)) {
+                if (((MainActivity)getActivity()).sendMessage(Indexes.FAN_MAINHALL, new_value)) {
                     mApplication.values.mFanMainHallAmount =
                             changeFanAmount(mApplication.values.mFanMainHallAmount, increase);
-                } else {
-                    Notifications.showErrorCrouton(getActivity(), Globals.NOTIFICATION_NO_CONNECTION);
                 }
                 break;
             case Balcony:
                 new_value = calculateNewFanValue(mApplication.values.mFanBalconyAmount, increase);
-                if (((MainActivity) getActivity()).mBoundService != null && ((MainActivity) getActivity()).mBoundService.sendValue(Indexes.FAN_BALCONY, new_value)) {
+                if (((MainActivity)getActivity()).sendMessage(Indexes.FAN_BALCONY, new_value)) {
                     mApplication.values.mFanBalconyAmount =
                             changeFanAmount(mApplication.values.mFanBalconyAmount, increase);
-                } else {
-                    Notifications.showErrorCrouton(getActivity(), Globals.NOTIFICATION_NO_CONNECTION);
                 }
                 break;
             case Bathroom:
                 new_value = calculateNewFanValue(mApplication.values.mFanBathroomAmount, increase);
-                if (((MainActivity) getActivity()).mBoundService != null && ((MainActivity) getActivity()).mBoundService.sendValue(Indexes.FAN_BATHROOM, new_value)) {
+                if (((MainActivity)getActivity()).sendMessage(Indexes.FAN_BATHROOM, new_value)) {
                     mApplication.values.mFanBathroomAmount =
                             changeFanAmount(mApplication.values.mFanBathroomAmount, increase);
-                } else {
-                    Notifications.showErrorCrouton(getActivity(), Globals.NOTIFICATION_NO_CONNECTION);
                 }
                 break;
             case Bedroom:
                 new_value = calculateNewFanValue(mApplication.values.mFanBedroomAmount, increase);
-                if (((MainActivity) getActivity()).mBoundService != null && ((MainActivity) getActivity()).mBoundService.sendValue(Indexes.FAN_BEDROOM, new_value)) {
+                if (((MainActivity)getActivity()).sendMessage(Indexes.FAN_BEDROOM, new_value)) {
                     mApplication.values.mFanBedroomAmount =
                             changeFanAmount(mApplication.values.mFanBedroomAmount, increase);
-                } else {
-                    Notifications.showErrorCrouton(getActivity(), Globals.NOTIFICATION_NO_CONNECTION);
                 }
                 break;
             case DressingRoom:
                 new_value = calculateNewFanValue(mApplication.values.mFanDressingRoomAmount, increase);
-                if (((MainActivity) getActivity()).mBoundService != null && ((MainActivity) getActivity()).mBoundService.sendValue(Indexes.FAN_DRESSING_ROOM, new_value)) {
+                if (((MainActivity)getActivity()).sendMessage(Indexes.FAN_DRESSING_ROOM, new_value)) {
                     mApplication.values.mFanDressingRoomAmount =
                             changeFanAmount(mApplication.values.mFanDressingRoomAmount, increase);
-                } else {
-                    Notifications.showErrorCrouton(getActivity(), Globals.NOTIFICATION_NO_CONNECTION);
                 }
                 break;
         }
@@ -937,6 +879,11 @@ public class FragmentTemperature extends Fragment implements View.OnClickListene
         IntentFilter filter = new IntentFilter();
         filter.addAction("TEMPFAN.VALUES.CHANGED");
         getActivity().registerReceiver(mReceiver, filter);
+
+        updateTempFanValue();
+        updateTempFanAutoValue();
+        updateTempFanSwitchValue();
+        updateTempFanAllSwitch();
     }
 
     @Override

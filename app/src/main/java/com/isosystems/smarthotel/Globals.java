@@ -6,7 +6,7 @@ package com.isosystems.smarthotel;
 public final class Globals {
 
 	/** Папка на sd-card с файлами для приложения */
-	public static final String EXTERNAL_ROOT_DIRECTORY = "smarthouse";
+	public static final String EXTERNAL_ROOT_DIRECTORY = "smarthotel";
 	/** Папка в EXTERNAL_ROOT_DIRECTORY где хранятся изображения */
 	public static final String EXTERNAL_IMAGES_DIRECTORY = "images";
     /** Папка в assets, откуда берутся стандартные картинки */

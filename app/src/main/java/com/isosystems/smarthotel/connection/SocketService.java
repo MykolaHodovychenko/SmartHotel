@@ -14,19 +14,11 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.widget.Toast;
 
-import com.isosystems.smarthotel.Globals;
-import com.isosystems.smarthotel.utils.Indexes;
-
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -43,11 +35,10 @@ public class SocketService extends Service {
     static Handler mMessageHandler;
     StringBuilder mMessageBuffer;
 
-
     String mWifiName = "";
     String mWifiPassword = "";
     int mWifiReconnectTimeout = 10000;
-
+    Boolean mSocketEndlessTimeout = true;
     String mSocketIp = "";
     int mSocketPort = 0;
     int mSocketTimeout = 10000;
@@ -56,11 +47,11 @@ public class SocketService extends Service {
     // Периодическая очистка буфера
     static Handler mBufferCleanHandler;
 
-    static Handler mSocketAliveHandler;
-
     // Время после прихода последнего сообщения
     // которое должно пройти для очистки буфера
-    int mBufferClearTimeout = 10000;
+    int mBufferClearTimeout = 30000;
+
+    Intent i;
 
     WifiManager mWifiManager;
     WifiConfiguration mWifiConfig;
@@ -68,6 +59,7 @@ public class SocketService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
+        this.i = intent;
         return myBinder;
     }
 
@@ -81,63 +73,16 @@ public class SocketService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        // Считывание из настроек
-        SharedPreferences prefs = PreferenceManager
-                .getDefaultSharedPreferences(getApplicationContext());
-
-        mWifiName = prefs.getString("wifi_name", "YAM-AP-00000002");
-        mWifiPassword = prefs.getString("wifi_password", "12345678");
-
-        String s = prefs.getString("wifi_reconnect_timeout", "10000");
-        try {
-            mWifiReconnectTimeout = Integer.parseInt(s);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        }
-
-        mSocketIp = prefs.getString("socket_ip", "192.168.4.1");
-
-        s = prefs.getString("socket_port", "12345");
-        try {
-            mSocketPort = Integer.parseInt(s);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        }
-
-        s = prefs.getString("socket_timeout", "10000");
-        try {
-            mSocketTimeout = Integer.parseInt(s);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        }
-
-        mSocketGreetingsMessage = prefs.getString("socket_message", "DisplayNumber:1");
-        // -----
-
-        mWifiManager = (WifiManager) getSystemService(getApplicationContext().WIFI_SERVICE);
-
-        List <WifiConfiguration> list = mWifiManager.getConfiguredNetworks();
-        for (int i=0;i<list.size();i++){
-            mWifiManager.removeNetwork(i);
-        }
-        mWifiConfig = new WifiConfiguration();
-        mWifiConfig.SSID = "\"" + mWifiName + "\"";
-        mWifiConfig.preSharedKey = "\"" + mWifiPassword + "\"";
-        mConfigID = mWifiManager.addNetwork(mWifiConfig);
-
-        Runnable wifi_connect = new WifiConnect();
-        new Thread(wifi_connect).start();
-
         mMessageBuffer = new StringBuilder();
         mMessageHandler = new Handler() {
-            public void handleMessage(android.os.Message msg) {
+            public void handleMessage(Message msg) {
                 Bundle bundle = msg.getData();
 
                 // Сообщение
                 String message = bundle.getString("message");
 
-                // Добавляем сообщение в буфер
-                mMessageBuffer.append(message);
+                        // Добавляем сообщение в буфер
+                                        mMessageBuffer.append(message);
 
                 // Поиск подстроки, которая начинается с @ или & или $
                 // и заканчивается ¶
@@ -157,6 +102,8 @@ public class SocketService extends Service {
         mBufferCleanHandler.postDelayed(mBufferClearRunnable,
                 mBufferClearTimeout);
 
+        Runnable wifi_connect = new WifiConnect();
+        new Thread(wifi_connect).start();
     }
 
     // Runnable для очистки буфера после N мсек.
@@ -174,21 +121,35 @@ public class SocketService extends Service {
 
     private void messageProcess(String message) {
         Intent i = new Intent();
-
-        // Стирание последнего символа = ¶
         message = message.substring(0, message.length() - 1);
 
-        if (message.charAt(0) == '$') {
-        } else if (message.charAt(0) == '&') {
-            i.setAction("SOCKET.DATA");
-            i.putExtra("message", message);
-            getApplicationContext().sendBroadcast(i);
-            // TODO: броадкаст сообщения со значениями
-        } else if (message.charAt(0) == '@') {
-        } else if (message.charAt(0) == '#') {
-        } else {
-            // Logging.v("Пришло сообщение неизвестного формата: " + message);
-        } // end char[0]
+        switch (message.charAt(0)) {
+            case '$':
+                if (message.length() > 2) {
+                    String alarmMessage = message.substring(2);
+                    i.setAction(ConnectionManager.MESSAGE_ALARM);
+                    i.putExtra(ConnectionManager.MESSAGE_EXTRA, alarmMessage);
+                } else {
+                    i.setAction(ConnectionManager.ERROR_MESSAGE_SHORT);
+                }
+                break;
+            case '&':
+                i.putExtra(ConnectionManager.MESSAGE_EXTRA, message);
+                i.setAction(ConnectionManager.MESSAGE_VALUE);
+                break;
+            case '@':
+                i.putExtra(ConnectionManager.MESSAGE_EXTRA, message);
+                i.setAction(ConnectionManager.MESSAGE_FORMSCREEN);
+                break;
+            case '#':
+                i.putExtra(ConnectionManager.MESSAGE_EXTRA, message);
+                i.setAction(ConnectionManager.MESSAGE_FORMSCREEN_FORCED);
+                break;
+            default:
+                i.setAction(ConnectionManager.ERROR_MESSAGE_UNKNOWN_TYPE);
+                break;
+        }
+        getApplicationContext().sendBroadcast(i);
     } // end method
 
     /**
@@ -207,9 +168,8 @@ public class SocketService extends Service {
         try {
             out = new PrintWriter(new BufferedWriter
                     (new OutputStreamWriter(socket.getOutputStream())), true);
-            out.println(message);
+            out.print(message);
             out.flush();
-            //Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -220,20 +180,51 @@ public class SocketService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
+
+        this.i = intent;
+
         return START_NOT_STICKY;
     }
 
     class WifiConnect implements Runnable {
         @Override
         public void run() {
+
+            try {
+                SharedPreferences prefs = PreferenceManager
+                        .getDefaultSharedPreferences(getApplicationContext().getApplicationContext());
+                mWifiName = prefs.getString("wifi_name", "");
+                mWifiPassword = prefs.getString("wifi_password", "");
+                mWifiReconnectTimeout = 10000;
+                mSocketTimeout = 10000;
+                mSocketIp = prefs.getString("socket_ip", "");
+                mSocketGreetingsMessage = prefs.getString("socket_message","");
+                String s = prefs.getString("socket_port", "");
+                try {
+                    mSocketPort = Integer.parseInt(s);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            mWifiManager = (WifiManager) getSystemService(getApplicationContext().WIFI_SERVICE);
+
+            List <WifiConfiguration> list = mWifiManager.getConfiguredNetworks();
+            for (int i=0;i<list.size();i++){
+                mWifiManager.removeNetwork(list.get(i).networkId);
+            }
+            mWifiConfig = new WifiConfiguration();
+            mWifiConfig.SSID = "\"" + mWifiName + "\"";
+            mWifiConfig.preSharedKey = "\"" + mWifiPassword + "\"";
+            mConfigID = mWifiManager.addNetwork(mWifiConfig);
+
             while (true) {
                 if (mWifiManager.isWifiEnabled()) {
                     mWifiManager.disconnect();
 
-                    List <WifiConfiguration> list = mWifiManager.getConfiguredNetworks();
-                    for (int i=0;i<list.size();i++){
-                        mWifiManager.removeNetwork(i);
-                    }
+                    list = mWifiManager.getConfiguredNetworks();
                     mConfigID = mWifiManager.addNetwork(mWifiConfig);
 
                     try {
@@ -245,9 +236,14 @@ public class SocketService extends Service {
                     ConnectivityManager connManager = (ConnectivityManager) getApplicationContext().getSystemService(getApplicationContext().CONNECTIVITY_SERVICE);
                     NetworkInfo networkInfo = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
-                    while (!networkInfo.isConnected() &&
-                            (mWifiManager.getConnectionInfo().getSSID().equals(mWifiName)
-                                    || mWifiManager.getConnectionInfo().getSSID().equals("\"" + mWifiName+ "\""))) {
+                    while (!networkInfo.isConnected()) {
+
+                        int nmb = 0;
+                        list = mWifiManager.getConfiguredNetworks();
+                        for (int i=0;i<list.size();i++){
+                            if (list.get(i).networkId == mConfigID) nmb = i;
+                        }
+
                         mWifiManager.disconnect();
                         mWifiManager.enableNetwork(mConfigID, true);
                         mWifiManager.reconnect();
@@ -261,19 +257,24 @@ public class SocketService extends Service {
 
                     try {
                         socket = new Socket(mSocketIp, mSocketPort);
-                        socket.setSoTimeout(mSocketTimeout);
+
+                        if (!mSocketEndlessTimeout) {
+                            socket.setSoTimeout(mSocketTimeout);
+                        }
+
                         try {
                             out = new PrintWriter(new BufferedWriter
                                     (new OutputStreamWriter(socket.getOutputStream())), true);
                             in = socket.getInputStream();
 
                             if (out != null && !out.checkError()) {
-                                out.println(mSocketGreetingsMessage);
+                                out.print(mSocketGreetingsMessage);
                                 out.flush();
+                            } else {
                             }
 
                             Intent i = new Intent();
-                            i.setAction(Globals.BROADCAST_INTENT_CONNECT);
+                            i.setAction(ConnectionManager.WIFI_CONNECTED);
                             getApplicationContext().sendBroadcast(i);
 
                             SocketReceive receive = new SocketReceive();
@@ -295,44 +296,6 @@ public class SocketService extends Service {
         }
     }
 
-    class SocketConnect implements Runnable {
-        @Override
-        public void run() {
-            while (true) {
-                try {
-                    socket = new Socket(mSocketIp, mSocketPort);
-                    socket.setSoTimeout(mSocketTimeout);
-                    try {
-                        out = new PrintWriter(new BufferedWriter
-                                (new OutputStreamWriter(socket.getOutputStream())), true);
-                        in = socket.getInputStream();
-
-                        if (out != null && !out.checkError()) {
-                            out.println(mSocketGreetingsMessage);
-                            out.flush();
-                        }
-
-                        Intent i = new Intent();
-                        i.setAction(Globals.BROADCAST_INTENT_CONNECT);
-                        getApplicationContext().sendBroadcast(i);
-
-                        SocketReceive receive = new SocketReceive();
-                        AsyncTask<Void, String, Void> receiveTask = receive.execute();
-
-                        while (receiveTask.getStatus().equals(AsyncTask.Status.RUNNING)) {
-                        }
-
-                        out.close();
-                        in.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
 
     /**
      * Пытаемся закрыть сокет
@@ -387,7 +350,7 @@ public class SocketService extends Service {
                 }
             } catch (Exception e) {
                 Intent i = new Intent();
-                i.setAction(Globals.BROADCAST_INTENT_NO_CONNECT);
+                i.setAction(ConnectionManager.WIFI_DISCONNECTED);
                 getApplicationContext().sendBroadcast(i);
                 e.printStackTrace();
             }

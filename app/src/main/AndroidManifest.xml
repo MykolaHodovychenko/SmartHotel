@@ -2,12 +2,25 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.isosystems.smarthotel">
 
+    <uses-feature android:name="android.hardware.usb.host" />
+
+    <uses-permission android:name="android.permission.USB_PERMISSION" />
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <uses-permission android:name="android.permission.USB_PERMISSION" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
 
     <application
         android:name=".MyApplication"
@@ -54,6 +67,19 @@
             android:enabled="true">
         </service>
 
+        <activity android:name="Exiter" android:theme="@android:style/Theme.NoDisplay"/>
+
+        <activity
+            android:name=".utils.SendLog"
+            android:theme="@style/Theme.Transparent"
+            android:textAppearance="@android:style/TextAppearance.Large"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="com.isosystem.SEND_LOG" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <!-- Служебное окно для отлова присоединения USB-устройства -->
         <activity
             android:name="com.isosystems.smarthotel.connection.UsbAttachEventReceiver"
@@ -86,6 +112,17 @@
         <activity
             android:name=".settings.SettingsActivity"
             android:label="Настройки">
+        </activity>
+
+        <activity
+            android:name=".utils.ScreenSaverActivity"
+            android:label="Хранитель экрана"
+            android:noHistory="true" >
+        </activity>
+        <activity
+            android:name=".utils.ScreenDimActivity"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" >
         </activity>
 
     </application>

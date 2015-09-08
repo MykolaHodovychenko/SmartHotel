@@ -12,20 +12,16 @@ import android.hardware.usb.UsbManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.widget.Toast;
 
-import com.isosystems.smarthotel.Globals;
-import com.isosystems.smarthotel.MyApplication;
+import com.isosystems.smarthotel.connection.ConnectionManager;
 
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Сервис для приема сообщений из контроллера Запускается в момент
- */
 public class USBReceiveService extends IntentService {
-	MyApplication mApplication;
 
 	UsbManager usbManager;
 	HashMap<String, UsbDevice> deviceList;
@@ -38,7 +34,7 @@ public class USBReceiveService extends IntentService {
 	static Handler mMessageHandler;
 
 	static Handler mBufferCleanHandler;
-	int mBufferClearTimeout = 2000;
+	int mBufferClearTimeout = 20000;
 
 	public USBReceiveService() {
 		super("USBReceive");
@@ -46,7 +42,6 @@ public class USBReceiveService extends IntentService {
 
 	public void onCreate() {
 		super.onCreate();
-		mApplication = (MyApplication) getApplicationContext();
 
 		mMessageBuffer = new StringBuilder();
 
@@ -55,30 +50,23 @@ public class USBReceiveService extends IntentService {
 				mBufferClearTimeout);
 
 		mMessageHandler = new Handler() {
-			public void handleMessage(android.os.Message msg) {
+			public void handleMessage(Message msg) {
 				Bundle bundle = msg.getData();
 
-				// Сообщение
 				String message = bundle.getString("incoming_message");
 
-				// Добавляем сообщение в буфер
 				mMessageBuffer.append(message);
 
-				// Поиск подстроки, которая начинается с @ или & или $
-				// и заканчивается ¶
 				Pattern p = Pattern.compile("[@&$#](.*?)¶");
 				Matcher m = p.matcher(mMessageBuffer);
 				while (m.find()) {
 					messageProcess(m.group());
 				}
 
-				// После отправки сообщения на обработку, оно удаляется из
-				// буфера
 				mMessageBuffer = new StringBuilder(m.replaceAll(""));
 			} // handle message
 		}; // handler
 
-		/** 1. Получаем список устройств */
 		try {
 			usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
 			deviceList = usbManager.getDeviceList();
@@ -88,19 +76,14 @@ public class USBReceiveService extends IntentService {
 			return;
 		}
 
-		// Устройств нету
 		if (deviceList.isEmpty()) {
 			this.stopSelf();
 			return;
 		}
 
-
-		/** 2. Ищем среди найденных устройств нужное устройство */
 		for (UsbDevice device : deviceList.values()) {
-
 			if ((device.getProductId() == 257)
 					&& (device.getVendorId() == 65535)) {
-
 				try {
 					usbDevice = device;
 				} catch (Exception e) {
@@ -109,15 +92,13 @@ public class USBReceiveService extends IntentService {
 					return;
 				}
 			}// if
-		}
+		}// for
 
-		// Нужных устройств нет
 		if (usbDevice == null) {
 			this.stopSelf();
 			return;
 		}
 
-		/** 3. Берем интерфейс устройства */
 		for (int i = 0; i < usbDevice.getInterfaceCount(); i++) {
 			UsbInterface tempInterfce = usbDevice.getInterface(i);
 			if (tempInterfce.getEndpointCount() > 1) {
@@ -125,15 +106,13 @@ public class USBReceiveService extends IntentService {
 			}
 		}
 
-		// Нужных интерфейсов нет
 		if (usbInterface == null) {
-			// Logging.v("Подходящих интерфейсов не обнаружено");
 			this.stopSelf();
 			return;
 		}
 
-		/** 4. Берем EndPoint */
 		for (int i = 0; i < usbInterface.getEndpointCount(); i++) {
+
 			UsbEndpoint tempPoint = usbInterface.getEndpoint(i);
 			if (tempPoint.getDirection() == UsbConstants.USB_DIR_IN) {
 				usbEndPointIn = tempPoint;
@@ -145,7 +124,6 @@ public class USBReceiveService extends IntentService {
 			return;
 		}
 
-		// Открываем соединение для USB-устройства
 		try {
 			usbConnection = usbManager.openDevice(usbDevice);
 		} catch (Exception e) {
@@ -154,18 +132,13 @@ public class USBReceiveService extends IntentService {
 			return;
 		}
 
-		// Отсылаем броадкаст о том, что пришло алармовое сообщение
 		Intent i = new Intent();
-		i.setAction(Globals.BROADCAST_INTENT_ALARM_MESSAGE);
+		i.setAction(ConnectionManager.USB_CONNECTED);
 		getApplicationContext().sendBroadcast(i);
-
-		mApplication.isUsbConnected = true;
 	}
 
-	// Runnable для очистки буфера после N мсек.
 	private Runnable mBufferClearRunnable = new Runnable() {
 		public void run() {
-			// Очистка буфера
 			mMessageBuffer = new StringBuilder();
 
 			mBufferCleanHandler.removeCallbacks(mBufferClearRunnable);
@@ -194,17 +167,12 @@ public class USBReceiveService extends IntentService {
 		return false;
 	}
 
-	// ---- ПОЛУЧЕНИЕ СООБЩЕНИЯ
-
 	@Override
 	protected void onHandleIntent(Intent intent) {
 		while (checkUsbDevice()) {
-			// Буфер для приема сообщений
 			byte[] mReadBuffer = new byte[128];
-			// Количество принятых байт
 			int transferred = -1;
 
-			// Берем интерфейс
 			try {
 				usbConnection.claimInterface(usbInterface, true);
 			} catch (Exception e) {
@@ -220,7 +188,6 @@ public class USBReceiveService extends IntentService {
 				continue;
 			}
 
-			// Освобождаем интерфейс
 			try {
 				usbConnection.releaseInterface(usbInterface);
 			} catch (Exception e) {
@@ -228,10 +195,8 @@ public class USBReceiveService extends IntentService {
 				continue;
 			}
 
-			/** Обрабатываем пришедшие данные */
 			if (transferred >= 0) {
 
-				// Если пришло сообщение - сброс тайм-аута очистки буфера
 				mBufferCleanHandler.removeCallbacks(mBufferClearRunnable);
 				mBufferCleanHandler.postDelayed(mBufferClearRunnable,
 						mBufferClearTimeout);
@@ -251,52 +216,37 @@ public class USBReceiveService extends IntentService {
 		} // end while
 	} // end onHandleIntent
 
-	/**
-	 * Обработка пришедшего сообщения: 1) Считываем первый символ, чтобы понять
-	 * тип сообщения
-	 *
-	 * @param message
-	 *            Пришедшее сообщение
-	 */
 	private void messageProcess(String message) {
 		Intent i = new Intent();
-
-		// Стирание последнего символа = ¶
 		message = message.substring(0, message.length() - 1);
 
-		if (message.charAt(0) == '$') {
-			// Пришло алармовое сообщение
-			if (message.length() > 2) {
-				// Убираем $ и пробел
-				String alarmMessage = message.substring(2);
-
-				// Кидаем броадкаст
-				i.setAction(Globals.BROADCAST_INTENT_ALARM_MESSAGE);
-				getApplicationContext().sendBroadcast(i);
-			} else {
-			} // end if length
-		} else if (message.charAt(0) == '&') {
-			// Пришло интовое значение
-			i.setAction(Globals.BROADCAST_INTENT_VALUE_MESSAGE);
-			i.putExtra("message", message);
-			// Кидаем броадкаст
-			getApplicationContext().sendBroadcast(i);
-		} else if (message.charAt(0) == '@') {
-			// Пришло сообщение форматированного вывода
-			i.setAction(Globals.BROADCAST_INTENT_FORMSCREEN_MESSAGE);
-			i.putExtra("message", message);
-			// Кидаем броадкаст
-			getApplicationContext().sendBroadcast(i);
-		} else if (message.charAt(0) == '#') {
-			// Принудительное открытие окна форматированного вывода
-			if (message.length() > 2) {
-				i.setAction(Globals.BROADCAST_INTENT_FORCED_FORMSCREEN_MESSAGE);
-				i.putExtra("message",message);
-				getApplicationContext().sendBroadcast(i);
-			}
+		switch (message.charAt(0)) {
+			case '$':
+				if (message.length() > 2) {
+					String alarmMessage = message.substring(2);
+					i.setAction(ConnectionManager.MESSAGE_ALARM);
+					i.putExtra(ConnectionManager.MESSAGE_EXTRA, alarmMessage);
+				} else {
+					i.setAction(ConnectionManager.ERROR_MESSAGE_SHORT);
+				}
+				break;
+			case '&':
+				i.putExtra(ConnectionManager.MESSAGE_EXTRA, message);
+				i.setAction(ConnectionManager.MESSAGE_VALUE);
+				break;
+			case '@':
+				i.putExtra(ConnectionManager.MESSAGE_EXTRA, message);
+				i.setAction(ConnectionManager.MESSAGE_FORMSCREEN);
+				break;
+			case '#':
+				i.putExtra(ConnectionManager.MESSAGE_EXTRA, message);
+				i.setAction(ConnectionManager.MESSAGE_FORMSCREEN_FORCED);
+				break;
+			default:
+				i.setAction(ConnectionManager.ERROR_MESSAGE_UNKNOWN_TYPE);
+				break;
 		}
-		else {
-		} // end char[0]
+		getApplicationContext().sendBroadcast(i);
 	} // end method
 
 	public void onDestroy() {
@@ -304,7 +254,6 @@ public class USBReceiveService extends IntentService {
 			try {
 				usbConnection.releaseInterface(usbInterface);
 			} catch (Exception e) {
-				// Logging.v("Исключение при попытке освободить интерфейс");
 				e.printStackTrace();
 			}
 
@@ -313,14 +262,11 @@ public class USBReceiveService extends IntentService {
 			}
 
 			Intent i = new Intent();
-			i.setAction(Globals.BROADCAST_INTENT_ALARM_MESSAGE);
+			i.setAction(ConnectionManager.USB_DISCONNECTED);
 			getApplicationContext().sendBroadcast(i);
-
-			mApplication.isUsbConnected = false;
 
 			super.onDestroy();
 		} catch (Exception e) {
-			// Logging.v("Исключение при попытке уничтожить ReceiveService");
 			e.printStackTrace();
 			super.onDestroy();
 		}

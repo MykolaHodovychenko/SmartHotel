@@ -64,4 +64,6 @@ public  class Indexes {
     public static final int TEMPFAN_BEDROOM_AUTO = 43;
     public static final int TEMPFAN_DRESSING_ROOM_AUTO = 44;
 
+    public static final int FRONTDOOR_OPEN = 45;
+
 }

@@ -72,13 +72,13 @@
             android:scaleType="fitCenter"
             android:src="@drawable/menu_guard_x" />
 
-        <ImageButton
+        <com.isosystems.smarthotel.FlipMenuButton
             android:id="@+id/image_lock"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
-            android:src="@drawable/menu_lock_x" />
+            android:src="@drawable/frontdoor" />
     </LinearLayout>
 </LinearLayout>

@@ -1,6 +1,16 @@
 <resources>
-    <string name="app_name">SmartHotel</string>
+    <string name="app_name">SmartHotel_v2</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
+    <string-array name="connections_array">
+        <item>Wi-Fi</item>
+        <item>USB</item>
+    </string-array>
+
+    <string-array name="connections_values">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
 </resources>

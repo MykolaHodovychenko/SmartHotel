@@ -13,10 +13,8 @@ import com.isosystems.smarthotel.SwitchButton;
 
 public class Values {
 
-    public int int_room_number;
-    public int int_room_temperature;
-    public TextView room_number;
-    public TextView room_temperature;
+    public int mRoomNumber;
+    public int mRoomTemperature;
 
     public boolean mDNDButton;
     public boolean mGirlButton;
@@ -32,13 +30,13 @@ public class Values {
     public int mLightDressingRoomAmount = 0;
 
     //public SwitchButton mLightAllOf;
-    public boolean mLightAllOf = true;
+    public boolean mLightAllOf = false;
 
-    public Boolean mLightMainHallSwitch = true;
-    public Boolean mLightBalconySwitch = true;
-    public Boolean mLightBathroomSwitch = true;
-    public Boolean mLightBedroomSwitch = true;
-    public Boolean mLightDressingRoomSwitch = true;
+    public Boolean mLightMainHallSwitch = false;
+    public Boolean mLightBalconySwitch = false;
+    public Boolean mLightBathroomSwitch = false;
+    public Boolean mLightBedroomSwitch = false;
+    public Boolean mLightDressingRoomSwitch = false;
 
     public Boolean mLightMainHallAuto = false;
     public Boolean mLightBalconyAuto = false;
@@ -61,19 +59,21 @@ public class Values {
     public int mFanDressingRoomAmount = 0;
 
     //public SwitchButton mTempFanAllOf;
-    public boolean mTempFanAllOf = true;
+    public boolean mTempFanAllOf = false;
 
-    public Boolean mTempFanMainHallSwitch = true;
-    public Boolean mTempFanBalconySwitch = true;
-    public Boolean mTempFanBathroomSwitch = true;
-    public Boolean mTempFanBedroomSwitch = true;
-    public Boolean mTempFanDressingRoomSwitch = true;
+    public Boolean mTempFanMainHallSwitch = false;
+    public Boolean mTempFanBalconySwitch = false;
+    public Boolean mTempFanBathroomSwitch = false;
+    public Boolean mTempFanBedroomSwitch = false;
+    public Boolean mTempFanDressingRoomSwitch = false;
 
     public Boolean mTempFanMainHallAuto = false;
     public Boolean mTempFanBalconyAuto = false;
     public Boolean mTempFanBathroomAuto = false;
     public Boolean mTempFanBedroomAuto = false;
     public Boolean mTempFanDressingRoomAuto = false;
+
+    public Boolean mMainMenuFrontDoorOpen = false;
 
     public Values (Context context) {
 
@@ -125,20 +125,13 @@ public class Values {
         mFanDressingRoomAmount = fan_min;
     }
 
-
-    public void setRoomNumber() {
-        room_number.setText("Room № " + String.valueOf(int_room_number));
-    }
-
-    public void setRoomTemperature () {
-        room_temperature.setText(String.valueOf(int_room_temperature) + " °C");
-    }
-
     public void processArray (String[] array, Context context) {
 
         boolean roomFragmentValuesChanged = false;
         boolean lightValuesChanged = false;
         boolean tempfanValuesChanged = false;
+        boolean mainMenuValuesChanged = false;
+        boolean generalValuesChanged = false;
 
         for (int i=0; i < array.length; i++) {
 
@@ -152,17 +145,15 @@ public class Values {
 
             switch (i) {
                 case Indexes.ROOM_NUMBER:
-                    if (new_value != int_room_number){
-                        int_room_number = new_value;
-                        setRoomNumber();
-                        roomFragmentValuesChanged = true;
+                    if (new_value != mRoomNumber){
+                        mRoomNumber = new_value;
+                        generalValuesChanged = true;
                     }
                     break;
                 case Indexes.ROOM_TEMPERATURE:
-                    if (new_value != int_room_temperature) {
-                        int_room_temperature = new_value;
-                        setRoomTemperature();
-                        roomFragmentValuesChanged = true;
+                    if (new_value != mRoomTemperature) {
+                        mRoomTemperature = new_value;
+                        generalValuesChanged = true;
                     }
                     break;
                 case Indexes.RS_DND:
@@ -488,13 +479,21 @@ public class Values {
                         tempfanValuesChanged = true;
                     }
                     break;
+                // MAINMENU
+                case Indexes.FRONTDOOR_OPEN:
+                    b = (new_value > 0) ? Boolean.TRUE : Boolean.FALSE;
+                    if (b != mMainMenuFrontDoorOpen) {
+                        mMainMenuFrontDoorOpen = b;
+                        mainMenuValuesChanged = true;
+                    }
+                    break;
             }
         }
 
-        sendBroadcasts(roomFragmentValuesChanged,lightValuesChanged,tempfanValuesChanged, context);
+        sendBroadcasts(roomFragmentValuesChanged,lightValuesChanged,tempfanValuesChanged, mainMenuValuesChanged,generalValuesChanged, context);
     }
 
-    private void sendBroadcasts(boolean room_service,boolean light, boolean temp_fan, Context context) {
+    private void sendBroadcasts(boolean room_service,boolean light, boolean temp_fan, boolean mainmenu, boolean general, Context context) {
         if (room_service) {
             Intent i = new Intent();
             i.setAction("RS.VALUES.CHANGED");
@@ -504,13 +503,21 @@ public class Values {
             Intent i = new Intent();
             i.setAction("LIGHT.VALUES.CHANGED");
             context.sendBroadcast(i);
-
         }
         if (temp_fan) {
             Intent i = new Intent();
             i.setAction("TEMPFAN.VALUES.CHANGED");
             context.sendBroadcast(i);
-
+        }
+        if (mainmenu) {
+            Intent i = new Intent();
+            i.setAction("MAINMENU.VALUES.CHANGED");
+            context.sendBroadcast(i);
+        }
+        if (general) {
+            Intent i = new Intent();
+            i.setAction("GENERAL.VALUES.CHANGED");
+            context.sendBroadcast(i);
         }
     }
 

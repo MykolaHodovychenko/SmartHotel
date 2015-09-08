@@ -14,15 +14,15 @@
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
-            android:layout_height="36dp"
+            android:layout_height="24dp"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp"
             android:scaleType="centerInside"
             android:src="@drawable/logo" />
 
         <ImageButton
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:id="@+id/image_plug"
             android:scaleType="fitCenter"
             android:src="@drawable/plug_red"
@@ -30,12 +30,12 @@
             android:layout_alignParentRight="true"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:layout_marginRight="20dp"
-            android:clickable="false" />
+            android:clickable="false"
+            android:layout_marginRight="5dp" />
 
         <ImageButton
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:id="@+id/image_wifi"
             android:scaleType="fitCenter"
             android:src="@drawable/wifi_red"
@@ -44,14 +44,13 @@
             android:layout_toLeftOf="@+id/image_plug"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:clickable="false" />
+            android:clickable="false"
+            android:layout_marginRight="10dp" />
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
         android:orientation="vertical">
 
         <LinearLayout
@@ -71,23 +70,25 @@
                 android:textColor="#58595B"
                 android:textStyle="bold" />
 
-            <ImageView
-                android:id="@+id/imageView7"
+            <View
+                android:id="@+id/spacer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
-            <TextClock
-                android:id="@+id/textClock"
+            <TextView
+                android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:format24Hour="k:mm" />
+                android:text="Room temperature"
+                android:textColor="#58595B"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="70dp"
             android:background="@drawable/menubar_lower"
             android:gravity="center_vertical"
             android:paddingLeft="10dp"
@@ -95,17 +96,18 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:paddingBottom="4dp">
+                android:paddingBottom="4dp"
+                android:layout_marginBottom="12dp">
 
                 <ImageButton
                     android:id="@+id/home_button"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_alignParentLeft="false"
                     android:background="@android:color/transparent"
                     android:scaleType="fitCenter"
@@ -113,8 +115,8 @@
 
                 <ImageButton
                     android:id="@+id/button_settings"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="50dp"
+                    android:layout_height="60dp"
                     android:layout_alignParentBottom="false"
                     android:layout_alignParentLeft="false"
                     android:layout_marginLeft="15dp"
@@ -137,8 +139,8 @@
 
                 <ImageButton
                     android:id="@+id/back_image"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_alignParentLeft="false"
                     android:layout_marginLeft="40dp"
                     android:layout_toRightOf="@+id/imageButton11"
@@ -157,7 +159,7 @@
                 android:text="Main"
                 android:textColor="#58595B"
                 android:textIsSelectable="false"
-                android:textSize="22sp"
+                android:textSize="30sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -169,8 +171,9 @@
                 android:paddingBottom="4dp"
                 android:text=""
                 android:textColor="#58595B"
-                android:textSize="22sp"
-                android:textStyle="bold" />
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:layout_marginRight="15dp" />
         </RelativeLayout>
     </LinearLayout>
 

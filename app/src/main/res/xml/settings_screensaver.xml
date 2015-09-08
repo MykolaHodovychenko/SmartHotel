@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:example="http://schemas.android.com/apk/res/com.isosystems.smarthotel"
+    android:key="screen_saver"
+    android:summary="Настройка хранителя экрана планшета"
+    android:title="Хранитель экрана" >
+
+    <!-- Использование хранителя экрана -->
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="enable_screen_saver"
+        android:summary="Использовать хранитель экрана в главных окнах и в окнах форматированного вывода"
+        android:title="Использовать хранитель экрана" />
+    <!-- Время бездействия (сек) -->
+    <EditTextPreference
+        android:defaultValue="25"
+        android:dependency="enable_screen_saver"
+        android:digits="0123456789"
+        android:inputType="numberSigned"
+        android:key="screen_saver_idle_time"
+        android:summary="Укажите время бездействия до появления хранителя экрана, в секундах"
+        android:title="Время бездействия (сек)" >
+    </EditTextPreference>
+
+    <PreferenceCategory
+        android:key="screen_saver_slideshow"
+        android:summary="Настройка слайд-шоу"
+        android:title="Слайд-шоу" >
+
+        <!-- Интервал смены изображения (сек) -->
+        <EditTextPreference
+            android:defaultValue="5"
+            android:dependency="enable_screen_saver"
+            android:digits="0123456789"
+            android:inputType="numberSigned"
+            android:key="slide_show_image_change_time"
+            android:summary="Укажите интервал смены изображения в слайд-шоу, в секундах"
+            android:title="Интервал смены изображения (сек.)" >
+        </EditTextPreference>
+    </PreferenceCategory>
+    <!-- Затемнения экрана -->
+    <PreferenceCategory
+        android:key="screen_saver_screendim"
+        android:summary="Настройка затемнения экрана"
+        android:title="Затемнение экрана" >
+
+        <!-- Использование затемнения экрана -->
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:dependency="enable_screen_saver"
+            android:key="enable_screen_dim"
+            android:summary="Использовать затемнение экрана в качестве одного из режима хранителя экрана"
+            android:title="Использовать затемнение экрана" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:dependency="enable_screen_dim"
+            android:key="enable_clock"
+            android:summary="Показывать часы в режиме затемнения"
+            android:title="Показывать часы" />
+
+        <EditTextPreference
+            android:defaultValue="210"
+            android:dependency="enable_clock"
+            android:digits="0123456789"
+            android:inputType="numberSigned"
+            android:key="clock_font_size"
+            android:summary="Укажите размер шрифта в пикселях (0 и выше)"
+            android:title="Размер шрифта часов" >
+        </EditTextPreference>
+        <!-- Яркость затемненного экрана (%) -->
+        <com.isosystems.smarthotel.utils.SeekBarPreference
+            android:defaultValue="95"
+            android:dependency="enable_screen_dim"
+            android:dialogTitle="Уровень затеменения экрана"
+            android:key="screen_dim_brightness"
+            android:persistent="true"
+            android:summary="Уровень затемнения от 0 до 100, текущее значение: %1$d"
+            android:title="Уровень затеменения экрана"
+            example:maxValue="100"
+            example:minValue="0" />
+        <!-- Время работы режима затемненного экрана -->
+        <com.isosystems.smarthotel.utils.TimeSeekBarPreference
+            android:defaultValue="19:00-8:00"
+            android:dependency="enable_screen_dim"
+            android:dialogTitle="Временной промежуток для затемнения экрана"
+            android:key="screen_dim_enable_time"
+            android:persistent="true"
+            android:summary="Укажите время работы режима затемнения экрана. Для круглосуточной работы режима затемнения, укажите одинаковое начальное и конечное время "
+            android:title="Время работы режима затеменения экрана" />
+    </PreferenceCategory>
+</PreferenceScreen>
