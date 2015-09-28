@@ -1,19 +1,29 @@
+<!--
+  ~ SmartHotel, created by NickGodov on 27.09.15 21:00.
+  ~ Last modified: 11.09.15 10:52
+  ~
+  ~ This software is protected by copyright law and international treaties.
+  ~ Unauthorized reproduction or distribution of this program, or any portion of it, may result in severe
+  ~ civil and criminal penalties, and will be prosecuted to the maximum extent possible under law.
+  ~
+  -->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/main_menu_bar"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="20dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
         android:layout_weight="1"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:gravity="fill">
 
         <LinearLayout
-            android:layout_width="170dp"
+            android:layout_width="300dp"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:orientation="vertical">
@@ -28,89 +38,76 @@
                     android:id="@+id/bMainHall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginTop="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/light_button_on"
                     android:text="Main Hall"
                     android:textColor="#42392d"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textSize="35sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="20dp" />
 
                 <com.isosystems.smarthotel.utils.MenuButton
                     android:id="@+id/bBalcony"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginTop="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/light_button_off"
                     android:text="Balcony"
                     android:textColor="#ded0ab"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textSize="35sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="20dp" />
 
                 <com.isosystems.smarthotel.utils.MenuButton
                     android:id="@+id/bBathroom"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginTop="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/light_button_off"
                     android:text="Bathroom"
                     android:textColor="#ded0ab"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textSize="35sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="20dp" />
 
                 <com.isosystems.smarthotel.utils.MenuButton
                     android:id="@+id/bBedroom"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginTop="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/light_button_off"
                     android:text="Bedroom"
                     android:textColor="#ded0ab"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textSize="35sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="20dp" />
 
                 <com.isosystems.smarthotel.utils.MenuButton
                     android:id="@+id/bDressingRoom"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginTop="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/light_button_off"
                     android:text="Dressing room"
                     android:textColor="#ded0ab"
-                    android:textSize="20sp"
+                    android:textSize="35sp"
                     android:textStyle="bold" />
             </LinearLayout>
-
         </LinearLayout>
 
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="600dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:orientation="vertical">
 
             <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_weight="1">
 
                 <ProgressBar
@@ -119,19 +116,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_alignParentBottom="false"
-                    android:layout_centerInParent="true"
                     android:indeterminate="false"
                     android:indeterminateOnly="false"
                     android:max="100"
                     android:progress="60"
-                    android:progressDrawable="@drawable/circular_m"
+                    android:progressDrawable="@drawable/circular"
                     android:rotation="-90"
-                    android:secondaryProgress="0" />
+                    android:secondaryProgress="0"
+                    android:layout_centerInParent="true" />
 
                 <ImageView
                     android:id="@+id/bulbImage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_alignParentLeft="false"
                     android:layout_alignParentStart="false"
                     android:layout_alignParentTop="false"
@@ -143,75 +140,79 @@
 
                 <com.isosystems.smarthotel.utils.PercentTextView
                     android:id="@+id/light_amount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_alignParentBottom="false"
                     android:layout_alignWithParentIfMissing="false"
                     android:layout_centerInParent="true"
                     android:gravity="center"
-                    android:paddingTop="170dp"
+                    android:paddingTop="220dp"
                     android:text="0%"
                     android:textColor="#ded0ab"
-                    android:textSize="75sp"
+                    android:textSize="90sp"
                     android:textStyle="bold" />
             </RelativeLayout>
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="170dp"
+        <View
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center_vertical|center_horizontal"
-            android:orientation="vertical">
+            android:layout_weight="1" />
+
+        <FrameLayout
+            android:layout_width="300dp"
+            android:layout_height="match_parent">
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="300dp"
-                android:baselineAligned="false"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:layout_width="300dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
 
-                <ImageView
+                <ImageButton
                     android:id="@+id/plus_button"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:clickable="true"
-                    android:src="@drawable/plus_switch" />
+                    android:src="@drawable/plus_drawable"
+                    android:scaleType="fitCenter"
+                    android:background="@android:color/transparent" />
 
                 <ImageView
                     android:id="@+id/imageView10"
-                    android:layout_width="match_parent"
+                    android:layout_width="208dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:src="@drawable/middle_switch" />
+                    android:src="@drawable/middle"
+                    android:scaleType="centerCrop" />
 
-                <ImageView
+                <ImageButton
                     android:id="@+id/minus_button"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:clickable="true"
-                    android:src="@drawable/minus_switch" />
+                    android:src="@drawable/minus_drawable"
+                    android:scaleType="fitCenter"
+                    android:background="@android:color/transparent" />
 
             </LinearLayout>
+        </FrameLayout>
 
-        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="170dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="5dp"
+        android:layout_height="300dp"
         android:layout_weight="2"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp">
 
         <com.isosystems.smarthotel.SwitchButton
             android:id="@+id/switch_all_light"
-            android:layout_width="170dp"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="false"
             android:layout_alignParentLeft="true"
@@ -222,13 +223,13 @@
             android:src="@drawable/all_lights_on" />
 
         <View
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
         <com.isosystems.smarthotel.SwitchButton
             android:id="@+id/switch_room_light"
-            android:layout_width="170dp"
+            android:layout_width="325dp"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="false"
             android:layout_alignParentLeft="false"
@@ -240,18 +241,19 @@
             android:src="@drawable/switch_on" />
 
         <View
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
         <com.isosystems.smarthotel.SwitchButton
             android:id="@+id/switch_auto_light"
-            android:layout_width="170dp"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignWithParentIfMissing="false"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
             android:src="@drawable/auto_off" />
+
     </LinearLayout>
 </LinearLayout>

@@ -15,10 +15,9 @@
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="24dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
             android:scaleType="centerInside"
-            android:src="@drawable/logo" />
+            android:src="@drawable/logo"
+            android:layout_centerVertical="true" />
 
         <ImageButton
             android:layout_width="24dp"
@@ -31,7 +30,8 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:clickable="false"
-            android:layout_marginRight="5dp" />
+            android:layout_marginRight="5dp"
+            android:layout_centerVertical="true" />
 
         <ImageButton
             android:layout_width="24dp"
@@ -45,7 +45,8 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:clickable="false"
-            android:layout_marginRight="10dp" />
+            android:layout_marginRight="10dp"
+            android:layout_centerVertical="true" />
     </RelativeLayout>
 
     <LinearLayout
@@ -180,8 +181,5 @@
     <FrameLayout
         android:id="@+id/frame_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"></FrameLayout>
+        android:layout_height="match_parent"></FrameLayout>
 </LinearLayout>

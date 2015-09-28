@@ -91,8 +91,8 @@ public class ScreenSaverActivity extends Activity {
 		
 		mImageSwitcher = (ImageSwitcher) findViewById(R.id.screen_saver_image_switcher);
 		
-		mImageSwitcher.setInAnimation(this, R.anim.flipin);
-		mImageSwitcher.setOutAnimation(this, R.anim.flipout);
+//		mImageSwitcher.setInAnimation(this, R.anim.flipin);
+//		mImageSwitcher.setOutAnimation(this, R.anim.flipout);
 		
 		mImageSwitcher.setFactory(new ViewFactory() {
 			@Override

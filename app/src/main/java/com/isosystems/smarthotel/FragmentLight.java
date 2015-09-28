@@ -26,6 +26,7 @@ import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
@@ -78,9 +79,9 @@ public class FragmentLight extends Fragment implements View.OnClickListener {
     MyApplication mApplication;
 
     // Кнопка + увеличение освещения
-    ImageView mPlusButton;
+    ImageButton mPlusButton;
     // Кнопка - уменьшение освещения
-    ImageView mMinusButton;
+    ImageButton mMinusButton;
 
     View rootView;
 
@@ -300,7 +301,7 @@ public class FragmentLight extends Fragment implements View.OnClickListener {
      * Установка кнопок +\-
      */
     private void setPlusMinusButton() {
-        mPlusButton = (ImageView) rootView.findViewById(R.id.plus_button);
+        mPlusButton = (ImageButton) rootView.findViewById(R.id.plus_button);
         mPlusButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -308,7 +309,7 @@ public class FragmentLight extends Fragment implements View.OnClickListener {
             }
         });
 
-        mMinusButton = (ImageView) rootView.findViewById(R.id.minus_button);
+        mMinusButton = (ImageButton) rootView.findViewById(R.id.minus_button);
         mMinusButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

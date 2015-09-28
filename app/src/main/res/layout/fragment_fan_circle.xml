@@ -1,0 +1,44 @@
+<!--
+  ~ SmartHotel, created by NickGodov on 11.09.15 0:39.
+  ~ Last modified: 11.09.15 0:39
+  ~
+  ~ This software is protected by copyright law and international treaties.
+  ~ Unauthorized reproduction or distribution of this program, or any portion of it, may result in severe
+  ~ civil and criminal penalties, and will be prosecuted to the maximum extent possible under law.
+  ~
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_weight="1">
+
+    <ProgressBar
+        android:id="@+id/fan_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="false"
+        android:max="40"
+        android:progress="60"
+        android:progressDrawable="@drawable/temp_circular"
+        android:layout_centerInParent="true"
+        android:indeterminate="false"
+        android:rotation="-90"
+        android:indeterminateOnly="false"
+        android:secondaryProgress="0" />
+
+    <ImageView
+        android:id="@+id/center_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentTop="false"
+        android:layout_centerInParent="true"
+        android:layout_weight="1"
+        android:scaleType="fitCenter"
+        android:src="@drawable/fan_round"
+        android:visibility="visible" />
+
+</RelativeLayout>

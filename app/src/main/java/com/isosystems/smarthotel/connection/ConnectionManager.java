@@ -26,7 +26,7 @@ public class ConnectionManager {
 
     public static final String USB_CONNECTED = "smart.connection.usb.connected";
     public static final String USB_DISCONNECTED = "smart.connection.usb.disconnected";
-
+    public static final String OLD_USB_DISCONNECTED = "smart.connection.usb.disconnected";
     public static final String WIFI_CONNECTED = "smart.connection.wifi.connected";
     public static final String WIFI_DISCONNECTED = "smart.connection.wifi.disconnected";
 
@@ -118,10 +118,33 @@ public class ConnectionManager {
         }
     }
 
-    public Boolean sendMessage(int index, int value) {
+
+    public Boolean sendMessage(Context context, int index, int value) {
         String messageToSend = processMessage(index, value);
 
-        if (isConnected) {
+        SharedPreferences prefs = PreferenceManager
+                .getDefaultSharedPreferences(context.getApplicationContext());
+
+        boolean blockOutput = prefs.getBoolean("block_output_without_connection", true);
+
+        if (blockOutput) {
+            if (isConnected) {
+                if (connectionMode == connectionMode.USB) {
+                    Intent i = new Intent(activity.getApplicationContext(),
+                            USBSendService.class);
+                    i.putExtra("message", messageToSend);
+                    activity.getApplicationContext().startService(i);
+                } else if (connectionMode == connectionMode.WIFI) {
+                    if (mBoundService != null) {
+                        mBoundService.sendMessage(messageToSend);
+                    }
+                }
+                return true;
+            } else {
+                Notifications.showErrorCrouton(activity, Globals.NOTIFICATION_NO_CONNECTION);
+                return false;
+            }
+        } else {
             if (connectionMode == connectionMode.USB) {
                 Intent i = new Intent(activity.getApplicationContext(),
                         USBSendService.class);
@@ -132,11 +155,7 @@ public class ConnectionManager {
                     mBoundService.sendMessage(messageToSend);
                 }
             }
-            //Toast.makeText(activity,messageToSend,Toast.LENGTH_SHORT).show();
             return true;
-        } else {
-            Notifications.showErrorCrouton(activity, Globals.NOTIFICATION_NO_CONNECTION);
-            return false;
         }
     }
 
@@ -177,7 +196,7 @@ public class ConnectionManager {
             activity.bindService(i, mConnection, Context.BIND_AUTO_CREATE);
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(activity,"cm_dobind error",Toast.LENGTH_LONG).show();
+            Toast.makeText(activity, "cm_dobind error", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -202,7 +221,7 @@ public class ConnectionManager {
                 mIsBound = true;
             } catch (Exception e) {
                 e.printStackTrace();
-                Toast.makeText(activity,"cm_sc_onsc error",Toast.LENGTH_LONG).show();
+                Toast.makeText(activity, "cm_sc_onsc error", Toast.LENGTH_LONG).show();
             }
         }
 
@@ -249,7 +268,7 @@ public class ConnectionManager {
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
-                            Toast.makeText(activity,"cm_br_reconnect error",Toast.LENGTH_LONG).show();
+                            Toast.makeText(activity, "cm_br_reconnect error", Toast.LENGTH_LONG).show();
                         }
                     }
                 }

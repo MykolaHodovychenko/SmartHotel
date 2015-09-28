@@ -31,6 +31,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -39,6 +40,7 @@ import android.widget.Toast;
 
 import com.isosystems.smarthotel.connection.ConnectionManager;
 import com.isosystems.smarthotel.settings.SettingsActivity;
+import com.isosystems.smarthotel.utils.Notifications;
 import com.isosystems.smarthotel.utils.ScreenDimActivity;
 import com.isosystems.smarthotel.utils.ScreenSaverActivity;
 
@@ -46,6 +48,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -180,10 +183,12 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
         mApplication = (MyApplication) getApplicationContext();
         mContext = this;
+
 
         // Handler для крашей
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
@@ -500,17 +505,10 @@ public class MainActivity extends FragmentActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
             // Включение полноэкранного режим планшета
             if (getActionBar() != null) {
                 getActionBar().hide();
             }
-            View decorView = getWindow().getDecorView();
-            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
-            decorView.setSystemUiVisibility(uiOptions);
-            decorView.setSystemUiVisibility(8);
-            // <<-----------------------------------
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -555,6 +553,11 @@ public class MainActivity extends FragmentActivity {
             mConnectionManager.unregisterReceiver();
             mConnectionManager.doUnbindService();
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            Runtime.getRuntime().exec("am startservice --user 0 -n com.android.systemui/.SystemUIService");
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -606,9 +609,9 @@ public class MainActivity extends FragmentActivity {
 
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setMessage("Введите пароль для входа в настройки:")
+                builder.setMessage("Please enter the password to enter the settings menu")
                         .setView(dialog_view)
-                        .setPositiveButton("Войти",
+                        .setPositiveButton("Enter",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int id) {
@@ -631,11 +634,12 @@ public class MainActivity extends FragmentActivity {
                                             startActivity(intent);
                                         } else {
                                             // Пароль неправильный
-                                            Toast.makeText(MainActivity.this, "Неверный пароль", Toast.LENGTH_SHORT).show();
+                                            Notifications.showErrorCrouton(MainActivity.this,"Wrong password!");
+                                            //Toast.makeText(MainActivity.this, "Wrong password!", Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 })
-                        .setNegativeButton("Отмена",
+                        .setNegativeButton("Cancel",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int id) {
@@ -699,7 +703,7 @@ public class MainActivity extends FragmentActivity {
     // endregion
 
     public Boolean sendMessage(int index, int value) {
-        return mConnectionManager.sendMessage(index, value);
+        return mConnectionManager.sendMessage(MainActivity.this, index, value);
     }
 
     public class MessagesReceiver extends BroadcastReceiver {

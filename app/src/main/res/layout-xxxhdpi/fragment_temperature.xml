@@ -1,3 +1,13 @@
+<!--
+  ~ SmartHotel, created by NickGodov on 27.09.15 21:12.
+  ~ Last modified: 11.09.15 13:13
+  ~
+  ~ This software is protected by copyright law and international treaties.
+  ~ Unauthorized reproduction or distribution of this program, or any portion of it, may result in severe
+  ~ civil and criminal penalties, and will be prosecuted to the maximum extent possible under law.
+  ~
+  -->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -146,10 +156,10 @@
                         android:layout_alignWithParentIfMissing="false"
                         android:layout_centerInParent="true"
                         android:gravity="center"
-                        android:paddingTop="240dp"
+                        android:paddingTop="220dp"
                         android:text="0°C"
                         android:textColor="#ded0ab"
-                        android:textSize="120sp"
+                        android:textSize="90sp"
                         android:textStyle="bold" />
                 </RelativeLayout>
 
@@ -241,7 +251,9 @@
                     android:src="@drawable/comfort_minus_drawable"
                     android:layout_weight="1"
                     android:clickable="true"
-                    android:scaleType="fitCenter" />
+                    android:scaleType="fitCenter"
+                    android:adjustViewBounds="false"
+                    android:layout_marginTop="-1dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -277,7 +289,8 @@
                     android:src="@drawable/comfort_minus_drawable"
                     android:layout_weight="1"
                     android:clickable="true"
-                    android:scaleType="fitCenter" />
+                    android:scaleType="fitCenter"
+                    android:layout_marginTop="-1dp" />
             </LinearLayout>
 
         </LinearLayout>

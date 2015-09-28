@@ -9,8 +9,8 @@ import com.isosystems.smarthotel.R;
 
 public class MenuButton extends Button {
 
-    int activeStateBackground = R.drawable.light_button_on;
-    int inactiveStateBackground = R.drawable.light_button_off;
+    int activeStateBackground = R.drawable.menu_active;
+    int inactiveStateBackground = R.drawable.menu_inactive;
     int activeTextColor = Color.parseColor("#42392d");
     int inactiveTextColor = Color.parseColor("#ded0ab");
 

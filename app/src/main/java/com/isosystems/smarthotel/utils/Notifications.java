@@ -22,7 +22,7 @@ public class Notifications {
         snackbarView.setBackgroundColor(Color.parseColor("#4d4032"));
         TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
         textView.setTextColor(Color.parseColor("#d4bca2"));
-        textView.setTextSize(25.0f);
+        textView.setTextSize(20.0f);
         snackbar.show();
     }
 
@@ -31,7 +31,7 @@ public class Notifications {
         Configuration configuration = new Configuration.Builder().setDuration(1200).build();
 
         Style style = new Style.Builder()
-                .setTextSize(35)
+                .setTextSize(25)
                 .setImageScaleType(ImageView.ScaleType.CENTER_INSIDE)
                 .setBackgroundColorValue(0xffff4444)
                 .setConfiguration(configuration)

@@ -14,9 +14,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -28,10 +30,12 @@ import com.isosystems.smarthotel.utils.Indexes;
  * 1. Инициализация и поддержка FlipMenuButton`s с Room Services
  * 2. Обработка нажатия на кнопки с изменением значений и отсылкой обновленных значений
  */
-public class FragmentRoomServices extends Fragment implements View.OnClickListener {
+public class FragmentRoomServices extends Fragment implements View.OnTouchListener {
 
     MyApplication mApplication;
     View rootView;
+
+    int mMenuButtonRadius = 140;
 
     // Кнопки Room Services
     public FlipMenuButton mDNDButton;
@@ -55,6 +59,12 @@ public class FragmentRoomServices extends Fragment implements View.OnClickListen
                 container, false);
         mApplication = (MyApplication) getActivity().getApplicationContext();
         // Инициализация ресивера
+
+        float density = getActivity().getResources().getDisplayMetrics().density;
+        if (density == 2.0f) {
+            mMenuButtonRadius = 275;
+        }
+
         mReceiver = new UpdatesReceiver();
         // Инициализация и настройка Room Services
         setFlipButtons(rootView);
@@ -69,40 +79,41 @@ public class FragmentRoomServices extends Fragment implements View.OnClickListen
     private void setFlipButtons(View v) {
         // Кнопка "Не беспокоить"
         mDNDButton = (FlipMenuButton) v.findViewById(R.id.do_not_disturb);
-        mDNDButton.setOnClickListener(this);
+        mDNDButton.setOnTouchListener(this);
         mDNDButton.setImageResources(R.drawable.menu_dnd, R.drawable.menu_dnd_active);
         mDNDButton.changeStateWithoutAnimation(mApplication.values.mDNDButton);
 
         // Кнопка "Вызов горничной"
         mGirlButton = (FlipMenuButton) v.findViewById(R.id.girl_image);
-        mGirlButton.setOnClickListener(this);
+        mGirlButton.setOnTouchListener(this);
         mGirlButton.setImageResources(R.drawable.menu_girl, R.drawable.menu_girl_active);
         mGirlButton.changeStateWithoutAnimation(mApplication.values.mGirlButton);
 
         // Кнопка "Уборка номера"
         mCleanButton = (FlipMenuButton) v.findViewById(R.id.clean_image);
-        mCleanButton.setOnClickListener(this);
+        mCleanButton.setOnTouchListener(this);
         mCleanButton.setImageResources(R.drawable.menu_clean, R.drawable.menu_clean_active);
         mCleanButton.changeStateWithoutAnimation(mApplication.values.mCleanButton);
 
         // Кнопка "Стирка вещей"
         mWashButton = (FlipMenuButton) v.findViewById(R.id.wash_image);
-        mWashButton.setOnClickListener(this);
+        mWashButton.setOnTouchListener(this);
         mWashButton.setImageResources(R.drawable.menu_wash, R.drawable.menu_wash_active);
         mWashButton.changeStateWithoutAnimation(mApplication.values.mWashButton);
 
         // Кнопка "Пополнение минибара"
         mBarButton = (FlipMenuButton) v.findViewById(R.id.bar_image);
-        mBarButton.setOnClickListener(this);
+        mBarButton.setOnTouchListener(this);
         mBarButton.setImageResources(R.drawable.menu_bar, R.drawable.menu_bar_active);
         mBarButton.changeStateWithoutAnimation(mApplication.values.mBarButton);
 
         // Кнопка "Еда в номер"
         mFoodButton = (FlipMenuButton) v.findViewById(R.id.food_image);
-        mFoodButton.setOnClickListener(this);
+        mFoodButton.setOnTouchListener(this);
         mFoodButton.setImageResources(R.drawable.menu_food, R.drawable.menu_food_active);
         mFoodButton.changeStateWithoutAnimation(mApplication.values.mFoodButton);
     }
+
 
     /**
      * При клике одну из кнопок Room Services:
@@ -113,8 +124,7 @@ public class FragmentRoomServices extends Fragment implements View.OnClickListen
      *
      * @param v View, на который кликнули (в данном случае, одна из кнопок)
      */
-    @Override
-    public void onClick(View v) {
+    public void flipButtonClicked(View v) {
         switch (v.getId()) {
             case R.id.do_not_disturb:
                 int state = (!mApplication.values.mDNDButton) ? 1 : 0;
@@ -207,6 +217,28 @@ public class FragmentRoomServices extends Fragment implements View.OnClickListen
         mWashButton.setButtonState(mApplication.values.mWashButton, true);
         mBarButton.setButtonState(mApplication.values.mBarButton, true);
         mFoodButton.setButtonState(mApplication.values.mFoodButton, true);
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            Rect r = new Rect();
+            v.getGlobalVisibleRect(r);
+            if (inCircle(event, mMenuButtonRadius, r.centerX(), r.centerY())) {
+                this.flipButtonClicked(v);
+            }
+        }
+
+        return false;
+    }
+
+    public boolean inCircle(MotionEvent e, int radius, float x, float y) {
+        float dx = e.getRawX() - x;
+        float dy = e.getRawY() - y;
+        double d = Math.sqrt((dx * dx) + (dy * dy));
+        if(d < radius)
+            return true;
+        return false;
     }
 
     /**

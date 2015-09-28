@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ SmartHotel, created by NickGodov on 27.09.15 20:59.
+  ~ Last modified: 10.09.15 23:53
+  ~
+  ~ This software is protected by copyright law and international treaties.
+  ~ Unauthorized reproduction or distribution of this program, or any portion of it, may result in severe
+  ~ civil and criminal penalties, and will be prosecuted to the maximum extent possible under law.
+  ~
+  -->
+
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:useLevel="true"
+    android:innerRadiusRatio="3.9"
+    android:shape="ring"
+    android:thickness="50dp" >
+    <solid android:color="#F1C481" />
+</shape>

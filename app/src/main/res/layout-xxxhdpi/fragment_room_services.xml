@@ -15,30 +15,37 @@
 
         <com.isosystems.smarthotel.FlipMenuButton
             android:id="@+id/do_not_disturb"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
-            android:src="@drawable/menu_dnd" />
+            android:src="@drawable/menu_dnd"
+            android:adjustViewBounds="true"
+            android:layout_gravity="center" />
 
         <com.isosystems.smarthotel.FlipMenuButton
             android:id="@+id/girl_image"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
-            android:src="@drawable/menu_girl" />
+            android:src="@drawable/menu_girl"
+            android:adjustViewBounds="true"
+            android:layout_gravity="center" />
 
         <com.isosystems.smarthotel.FlipMenuButton
             android:id="@+id/clean_image"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
-            android:src="@drawable/menu_clean" />
+            android:src="@drawable/menu_clean"
+            android:adjustViewBounds="true"
+            android:layout_gravity="center" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -50,29 +57,36 @@
 
         <com.isosystems.smarthotel.FlipMenuButton
             android:id="@+id/wash_image"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
-            android:src="@drawable/menu_wash" />
+            android:src="@drawable/menu_wash"
+            android:adjustViewBounds="true"
+            android:layout_gravity="center" />
 
         <com.isosystems.smarthotel.FlipMenuButton
             android:id="@+id/bar_image"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
-            android:src="@drawable/menu_bar" />
+            android:src="@drawable/menu_bar"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true" />
 
         <com.isosystems.smarthotel.FlipMenuButton
             android:id="@+id/food_image"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
-            android:src="@drawable/menu_food" />
+            android:src="@drawable/menu_food"
+            android:adjustViewBounds="true"
+            android:layout_gravity="center" />
+
     </LinearLayout>
 </LinearLayout>

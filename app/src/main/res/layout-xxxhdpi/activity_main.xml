@@ -1,3 +1,13 @@
+<!--
+  ~ SmartHotel, created by NickGodov on 10.09.15 20:05.
+  ~ Last modified: 06.09.15 0:14
+  ~
+  ~ This software is protected by copyright law and international treaties.
+  ~ Unauthorized reproduction or distribution of this program, or any portion of it, may result in severe
+  ~ civil and criminal penalties, and will be prosecuted to the maximum extent possible under law.
+  ~
+  -->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,11 +25,9 @@
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="24dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
             android:scaleType="centerInside"
             android:src="@drawable/logo"
-            android:layout_centerInParent="true" />
+            android:layout_centerVertical="true" />
 
         <ImageButton
             android:layout_width="24dp"
@@ -31,7 +39,9 @@
             android:layout_alignParentRight="true"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:layout_marginRight="5dp" />
+            android:clickable="false"
+            android:layout_marginRight="5dp"
+            android:layout_centerVertical="true" />
 
         <ImageButton
             android:layout_width="24dp"
@@ -44,8 +54,9 @@
             android:layout_toLeftOf="@+id/image_plug"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:layout_marginRight="10dp" />
-
+            android:clickable="false"
+            android:layout_marginRight="10dp"
+            android:layout_centerVertical="true" />
     </RelativeLayout>
 
     <LinearLayout
@@ -83,20 +94,16 @@
                 android:text="Room temperature"
                 android:textColor="#58595B"
                 android:textStyle="bold" />
-            <!--
-                        <TextClock
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/textClock"
-                            android:format24Hour="k:mm" />
-            -->
+
         </LinearLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:background="@drawable/menubar_lower"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -105,6 +112,7 @@
                 android:layout_centerVertical="true"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
+                android:paddingBottom="4dp"
                 android:layout_marginBottom="12dp">
 
                 <ImageButton
@@ -114,21 +122,31 @@
                     android:layout_alignParentLeft="false"
                     android:background="@android:color/transparent"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/home_menu_button"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="40dp" />
+                    android:src="@drawable/home_menu_button" />
 
                 <ImageButton
                     android:id="@+id/button_settings"
                     android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_height="60dp"
                     android:layout_alignParentBottom="false"
                     android:layout_alignParentLeft="false"
-                    android:layout_marginLeft="25dp"
+                    android:layout_marginLeft="15dp"
                     android:layout_toRightOf="@+id/imageButton9"
                     android:background="@android:color/transparent"
                     android:scaleType="fitCenter"
                     android:src="@drawable/settings_menu_button" />
+
+                <ImageButton
+                    android:id="@+id/imageButton11"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentLeft="false"
+                    android:layout_marginLeft="15dp"
+                    android:layout_toRightOf="@+id/imageButton10"
+                    android:background="@android:color/transparent"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/lock_menu_button"
+                    android:visibility="gone" />
 
                 <ImageButton
                     android:id="@+id/back_image"
@@ -166,8 +184,7 @@
                 android:textColor="#58595B"
                 android:textSize="30sp"
                 android:textStyle="bold"
-                android:layout_marginRight="15dp"
-                android:textIsSelectable="false" />
+                android:layout_marginRight="15dp" />
         </RelativeLayout>
     </LinearLayout>
 

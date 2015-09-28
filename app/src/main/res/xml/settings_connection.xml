@@ -11,6 +11,13 @@
             android:entries="@array/connections_array"
             android:entryValues="@array/connections_values" />
     </PreferenceCategory>
+    <PreferenceCategory android:title="Передача данных">
+        <CheckBoxPreference
+            android:title="Блокировать отправку, если нет подключения"
+            android:summary="Если устройство не подключено, при отправке показывается error"
+            android:key="block_output_without_connection"
+            android:defaultValue="true" />
+    </PreferenceCategory>
     <!-- WI-FI -->
     <PreferenceCategory android:title="Настройки Wi-Fi подключения">
         <EditTextPreference

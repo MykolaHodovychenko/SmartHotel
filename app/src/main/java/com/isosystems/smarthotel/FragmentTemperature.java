@@ -1,7 +1,6 @@
 package com.isosystems.smarthotel;
 
 import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,20 +12,18 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.ViewFlipper;
 
 import com.isosystems.smarthotel.utils.DegreeTextView;
 import com.isosystems.smarthotel.utils.Indexes;
 import com.isosystems.smarthotel.utils.MenuButton;
-import com.isosystems.smarthotel.utils.Notifications;
 
 public class FragmentTemperature extends Fragment implements View.OnClickListener {
 
@@ -34,27 +31,29 @@ public class FragmentTemperature extends Fragment implements View.OnClickListene
     SwitchButton mLightSwitchButton;
     SwitchButton mAutoSwitchButton;
 
-    ProgressBar mCircularProgress;
-    ImageView mCentralImage;
-
     ComfortWindowMode mWindowMode;
 
+    int mTempMin       = 15;
+    int mTempMax       = 40;
+    int mTempChange    = 1;
+    int mFanMin        = 0;
+    int mFanMax        = 100;
+    int mFanChange     = 10;
+    int mAnimationTick = 20;
+
+    ViewFlipper mFlipper;
+    DegreeTextView mTempAmount;
+
+    ProgressBar mTempProgress;
+    ProgressBar mFanProgress;
 
     UpdatesReceiver mReceiver;
 
     View rootView;
 
-    int mTemperatureImageResource;
-    int mFanImageResource;
-
-    Animation mSwitchToFanAnimation;
-    Animation mSwitchToTempAnimation;
-
     boolean isRunning = false;
 
     CurrentRoom mActiveRoom;
-
-    DegreeTextView mTempAmount;
 
     ImageView mTempUpButton;
     MyApplication mApplication;
@@ -70,13 +69,7 @@ public class FragmentTemperature extends Fragment implements View.OnClickListene
     MenuButton mBedroomButton;
     MenuButton mDressingRoomButton;
 
-    int mTempMin       = 15;
-    int mTempMax       = 40;
-    int mTempChange    = 1;
-    int mFanMin        = 0;
-    int mFanMax        = 100;
-    int mFanChange     = 10;
-    int mAnimationTick = 20;
+    FragmentTransaction mFragmentTransaction;
 
     public FragmentTemperature() {
     }
@@ -150,26 +143,26 @@ public class FragmentTemperature extends Fragment implements View.OnClickListene
             e.printStackTrace();
         }
 
+        mReceiver = new UpdatesReceiver();
+
+        // Установка переключателя центральных кругов
+        mFlipper = (ViewFlipper) rootView.findViewById(R.id.viewFlipper);
+
         // Установка режима окна, изначально - температура
         mWindowMode = ComfortWindowMode.TEMPERATURE;
 
-        mTemperatureImageResource = R.drawable.temp_round;
-        mFanImageResource = R.drawable.fan_round;
-
-        mCentralImage = (ImageView) rootView.findViewById(R.id.center_image);
-
+        // Показания температуры
         mTempAmount = (DegreeTextView) rootView.findViewById(R.id.temp_amount);
         Typeface font = Typeface.createFromAsset(getActivity().getAssets(),
                 "mono.ttf");
         mTempAmount.setTypeface(font);
 
-        mCircularProgress = (ProgressBar) rootView.findViewById(R.id.light_progress);
+        // Прогресс-бары
+        mTempProgress = (ProgressBar) rootView.findViewById(R.id.temp_progress);
+        mTempProgress.setMax(mTempMax);
 
-        mReceiver = new UpdatesReceiver();
-
-        // Установка анимаций
-        switchToFanAnimation();
-        switchToTemperatureAnimation();
+        mFanProgress = (ProgressBar) rootView.findViewById(R.id.fan_progress);
+        mFanProgress.setMax(mFanMax);
 
         // Установка кнопок +\- для режимов
         setMenuButtons();
@@ -177,7 +170,6 @@ public class FragmentTemperature extends Fragment implements View.OnClickListene
         setTemperatureButtons(rootView);
         setFanButtons(rootView);
 
-        switchToTempMode();
 
         return rootView;
     }
@@ -207,21 +199,17 @@ public class FragmentTemperature extends Fragment implements View.OnClickListene
 
     // Переход из режима "Вентилятор" в режим "Температура"
     private void switchToTempMode() {
-        mCentralImage.startAnimation(mSwitchToTempAnimation);
+        //mTempAmount.setVisibility(View.VISIBLE);
         mWindowMode = ComfortWindowMode.TEMPERATURE;
-
-        mCircularProgress.setMax(mTempMax - mTempMin);
-
+        mFlipper.showNext();
         updateTempFanValue();
     }
 
     // Переход из режима "Температура" в режим "Вентилятор"
     private void switchToFanMode() {
-        mCentralImage.startAnimation(mSwitchToFanAnimation);
         mWindowMode = ComfortWindowMode.FAN;
-
-        mCircularProgress.setMax(mFanMax - mFanMin);
-
+        mFlipper.showPrevious();
+        //mTempAmount.setVisibility(View.INVISIBLE);
         updateTempFanValue();
     }
 
@@ -333,6 +321,59 @@ public class FragmentTemperature extends Fragment implements View.OnClickListene
         }
     };
 
+    public void updateTempFanValue() {
+        if (mWindowMode == ComfortWindowMode.TEMPERATURE) {
+            switch (mActiveRoom) {
+                case MainHall:
+                    mTempAmount.setDegreeText(String.valueOf(mApplication.values.mTempMainHallAmount));
+                    mTempProgress.setProgress(mApplication.values.mTempMainHallAmount - mTempMin);
+                    break;
+                case Balcony:
+                    mTempAmount.setDegreeText(String.valueOf(mApplication.values.mTempBalconyAmount));
+                    mTempProgress.setProgress(mApplication.values.mTempBalconyAmount - mTempMin);
+                    break;
+                case Bathroom:
+                    mTempAmount.setDegreeText(String.valueOf(mApplication.values.mTempBathroomAmount));
+                    mTempProgress.setProgress(mApplication.values.mTempBathroomAmount - mTempMin);
+                    break;
+                case Bedroom:
+                    mTempAmount.setDegreeText(String.valueOf(mApplication.values.mTempBedroomAmount));
+                    mTempProgress.setProgress(mApplication.values.mTempBedroomAmount - mTempMin);
+                    break;
+                case DressingRoom:
+                    mTempAmount.setDegreeText(String.valueOf(mApplication.values.mTempDressingRoomAmount));
+                    mTempProgress.setProgress(mApplication.values.mTempDressingRoomAmount - mTempMin);
+                    break;
+            }
+        } else if (mWindowMode == ComfortWindowMode.FAN) {
+            switch (mActiveRoom) {
+                case MainHall:
+                    mFanProgress.setProgress(mApplication.values.mFanMainHallAmount - mFanMin);
+                    break;
+                case Balcony:
+                    mFanProgress.setProgress(mApplication.values.mFanBalconyAmount - mFanMin);
+                    break;
+                case Bathroom:
+                    mFanProgress.setProgress(mApplication.values.mFanBathroomAmount - mFanMin);
+                    break;
+                case Bedroom:
+                    mFanProgress.setProgress(mApplication.values.mFanBedroomAmount - mFanMin);
+                    break;
+                case DressingRoom:
+                    mFanProgress.setProgress(mApplication.values.mFanDressingRoomAmount - mFanMin);
+                    break;
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
     @Override
     public void onClick(View v) {
 
@@ -368,53 +409,6 @@ public class FragmentTemperature extends Fragment implements View.OnClickListene
         updateTempFanValue();
         updateTempFanAutoValue();
         updateTempFanSwitchValue();
-    }
-
-    public void updateTempFanValue() {
-        if (mWindowMode == ComfortWindowMode.TEMPERATURE) {
-            mCircularProgress.setMax(40);
-            switch (mActiveRoom) {
-                case MainHall:
-                    mTempAmount.setDegreeText(String.valueOf(mApplication.values.mTempMainHallAmount));
-                    mCircularProgress.setProgress(mApplication.values.mTempMainHallAmount - mTempMin);
-                    break;
-                case Balcony:
-                    mTempAmount.setDegreeText(String.valueOf(mApplication.values.mTempBalconyAmount));
-                    mCircularProgress.setProgress(mApplication.values.mTempBalconyAmount - mTempMin);
-                    break;
-                case Bathroom:
-                    mTempAmount.setDegreeText(String.valueOf(mApplication.values.mTempBathroomAmount));
-                    mCircularProgress.setProgress(mApplication.values.mTempBathroomAmount - mTempMin);
-                    break;
-                case Bedroom:
-                    mTempAmount.setDegreeText(String.valueOf(mApplication.values.mTempBedroomAmount));
-                    mCircularProgress.setProgress(mApplication.values.mTempBedroomAmount - mTempMin);
-                    break;
-                case DressingRoom:
-                    mTempAmount.setDegreeText(String.valueOf(mApplication.values.mTempDressingRoomAmount));
-                    mCircularProgress.setProgress(mApplication.values.mTempDressingRoomAmount - mTempMin);
-                    break;
-            }
-        } else if (mWindowMode == ComfortWindowMode.FAN) {
-            mCircularProgress.setMax(100);
-            switch (mActiveRoom) {
-                case MainHall:
-                    mCircularProgress.setProgress(mApplication.values.mFanMainHallAmount - mFanMin);
-                    break;
-                case Balcony:
-                    mCircularProgress.setProgress(mApplication.values.mFanBalconyAmount - mFanMin);
-                    break;
-                case Bathroom:
-                    mCircularProgress.setProgress(mApplication.values.mFanBathroomAmount - mFanMin);
-                    break;
-                case Bedroom:
-                    mCircularProgress.setProgress(mApplication.values.mFanBedroomAmount - mFanMin);
-                    break;
-                case DressingRoom:
-                    mCircularProgress.setProgress(mApplication.values.mFanDressingRoomAmount - mFanMin);
-                    break;
-            }
-        }
     }
 
     // region >>> Настройка кнопок для разных режимов
@@ -594,6 +588,93 @@ public class FragmentTemperature extends Fragment implements View.OnClickListene
         }
     }
 
+    private int changeFanAmount(int value, boolean increase) {
+        if (increase) {
+            int increment = mFanChange;
+
+            // Если текущее значение + инкремент > 100
+            // иначе уменьшаем инкремент, чтоб было равно 100
+            if (value + increment > mFanMax) {
+                increment = mFanMax - value;
+            }
+            if (increment == 0) return value;
+
+            // Анимируем изменение прогресс бара и цифр
+            ObjectAnimator animation = ObjectAnimator.ofInt(mFanProgress, "progress", value - mFanMin, (value + increment) - mFanMin);
+            animation.setDuration(mAnimationTick * increment); //in milliseconds
+            animation.setInterpolator(new LinearOutSlowInInterpolator());
+            isRunning = true;
+            //new Thread(new DynamicNumbers(value, increment, true)).start();
+            animation.start();
+
+            // новое значение = старое + инкремент
+            value += increment;
+        } else {
+            int decrement = mFanChange;
+            if (value - decrement < mFanMin) {
+                decrement = value - mFanMin;
+            }
+            if (decrement == 0) return value;
+
+            // Анимируем изменение прогресс бара и цифр
+            ObjectAnimator animation = ObjectAnimator.ofInt(mFanProgress, "progress", value - mFanMin, (value - decrement) - mFanMin);
+            animation.setDuration(mAnimationTick * decrement); //in milliseconds
+            animation.setInterpolator(new LinearOutSlowInInterpolator());
+            isRunning = true;
+            //new Thread(new DynamicNumbers(value, decrement, false)).start();
+            animation.start();
+
+            // новое значение = старое - декремент
+            value -= decrement;
+        }
+
+        return value;
+    }
+
+    private int changeTempAmount(int value, boolean increase) {
+        if (increase) {
+            int increment = mTempChange;
+
+            // Если текущее значение + инкремент > 100
+            // иначе уменьшаем инкремент, чтоб было равно 100
+            if (value + increment > mTempMax) {
+                increment = mTempMax - value;
+            }
+            if (increment == 0) return value;
+
+            // Анимируем изменение прогресс бара и цифр
+            ObjectAnimator animation = ObjectAnimator.ofInt(mTempProgress, "progress", value - mTempMin, (value + increment) - mTempMin);
+            animation.setDuration(mAnimationTick * increment); //in milliseconds
+            animation.setInterpolator(new LinearOutSlowInInterpolator());
+            isRunning = true;
+            new Thread(new DynamicNumbers(value, increment, true)).start();
+            animation.start();
+
+            // новое значение = старое + инкремент
+            value += increment;
+        } else {
+            int decrement = mTempChange;
+            if (value - decrement < mTempMin) {
+                decrement = value - mTempMin;
+            }
+            if (decrement == 0) return value;
+
+            // Анимируем изменение прогресс бара и цифр
+            ObjectAnimator animation = ObjectAnimator.ofInt(mTempProgress, "progress", value - mTempMin, (value - decrement) - mTempMin);
+            animation.setDuration(mAnimationTick * decrement); //in milliseconds
+            animation.setInterpolator(new LinearOutSlowInInterpolator());
+            isRunning = true;
+            new Thread(new DynamicNumbers(value, decrement, false)).start();
+            animation.start();
+
+            // новое значение = старое - декремент
+            value -= decrement;
+        }
+
+        return value;
+    }
+
+
     private int calculateNewTempValue (int value, boolean isIncrement) {
         if (isIncrement) {
             int increment = mTempChange;
@@ -628,7 +709,6 @@ public class FragmentTemperature extends Fragment implements View.OnClickListene
 
     // endregion
 
-    // region >>> Анимация progress bar и цифр
 
     public class DynamicNumbers implements Runnable {
 
@@ -679,178 +759,6 @@ public class FragmentTemperature extends Fragment implements View.OnClickListene
         }
     };
 
-
-    private int changeFanAmount(int value, boolean increase) {
-        if (increase) {
-            int increment = mFanChange;
-
-            // Если текущее значение + инкремент > 100
-            // иначе уменьшаем инкремент, чтоб было равно 100
-            if (value + increment > mFanMax) {
-                increment = mFanMax - value;
-            }
-            if (increment == 0) return value;
-
-            // Анимируем изменение прогресс бара и цифр
-            ObjectAnimator animation = ObjectAnimator.ofInt(mCircularProgress, "progress", value - mFanMin, (value + increment) - mFanMin);
-            animation.setDuration(mAnimationTick * increment); //in milliseconds
-            animation.setInterpolator(new LinearOutSlowInInterpolator());
-            isRunning = true;
-            new Thread(new DynamicNumbers(value, increment, true)).start();
-            animation.start();
-
-            // новое значение = старое + инкремент
-            value += increment;
-        } else {
-            int decrement = mFanChange;
-            if (value - decrement < mFanMin) {
-                decrement = value - mFanMin;
-            }
-            if (decrement == 0) return value;
-
-            // Анимируем изменение прогресс бара и цифр
-            ObjectAnimator animation = ObjectAnimator.ofInt(mCircularProgress, "progress", value - mFanMin, (value - decrement) - mFanMin);
-            animation.setDuration(mAnimationTick * decrement); //in milliseconds
-            animation.setInterpolator(new LinearOutSlowInInterpolator());
-            isRunning = true;
-            new Thread(new DynamicNumbers(value, decrement, false)).start();
-            animation.start();
-
-            // новое значение = старое - декремент
-            value -= decrement;
-        }
-
-        return value;
-    }
-
-    private int changeTempAmount(int value, boolean increase) {
-        if (increase) {
-            int increment = mTempChange;
-
-            // Если текущее значение + инкремент > 100
-            // иначе уменьшаем инкремент, чтоб было равно 100
-            if (value + increment > mTempMax) {
-                increment = mTempMax - value;
-            }
-            if (increment == 0) return value;
-
-            // Анимируем изменение прогресс бара и цифр
-            ObjectAnimator animation = ObjectAnimator.ofInt(mCircularProgress, "progress", value - mTempMin, (value + increment) - mTempMin);
-            animation.setDuration(mAnimationTick * increment); //in milliseconds
-            animation.setInterpolator(new LinearOutSlowInInterpolator());
-            isRunning = true;
-            new Thread(new DynamicNumbers(value, increment, true)).start();
-            animation.start();
-
-            // новое значение = старое + инкремент
-            value += increment;
-        } else {
-            int decrement = mTempChange;
-            if (value - decrement < mTempMin) {
-                decrement = value - mTempMin;
-            }
-            if (decrement == 0) return value;
-
-            // Анимируем изменение прогресс бара и цифр
-            ObjectAnimator animation = ObjectAnimator.ofInt(mCircularProgress, "progress", value - mTempMin, (value - decrement) - mTempMin);
-            animation.setDuration(mAnimationTick * decrement); //in milliseconds
-            animation.setInterpolator(new LinearOutSlowInInterpolator());
-            isRunning = true;
-            new Thread(new DynamicNumbers(value, decrement, false)).start();
-            animation.start();
-
-            // новое значение = старое - декремент
-            value -= decrement;
-        }
-
-        return value;
-    }
-
-    private void switchToFanAnimation() {
-
-        final Animation second_phase = AnimationUtils.loadAnimation(getActivity(), R.anim.flipout);
-        second_phase.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                mCircularProgress.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-
-        mSwitchToFanAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.flipin);
-        mSwitchToFanAnimation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-                mTempAmount.setVisibility(View.INVISIBLE);
-                mCircularProgress.setVisibility(View.INVISIBLE);
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                mCentralImage.setImageResource(mFanImageResource);
-                mCentralImage.startAnimation(second_phase);
-
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-            }
-        });
-    }
-
-    // Анимация для перехода из режима вентилятора в режим температуры
-    private void switchToTemperatureAnimation() {
-
-        final Animation second_phase = AnimationUtils.loadAnimation(getActivity(), R.anim.flipout);
-        second_phase.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                mCircularProgress.setVisibility(View.VISIBLE);
-                mTempAmount.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-
-        mSwitchToTempAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.flipin);
-        mSwitchToTempAnimation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-                mCircularProgress.setVisibility(View.INVISIBLE);
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                mCentralImage.setImageResource(mTemperatureImageResource);
-                mCentralImage.startAnimation(
-                        AnimationUtils.loadAnimation(getActivity(), R.anim.flipout));
-                mCentralImage.startAnimation(second_phase);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-            }
-        });
-    }
-
     private void updateTempFanAllSwitch() {
         mAllTempFanSwitchButton.setButtonState(mApplication.values.mTempFanAllOf);
     }
@@ -860,8 +768,8 @@ public class FragmentTemperature extends Fragment implements View.OnClickListene
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals("TEMPFAN.VALUES.CHANGED")) {
-                updateTempFanSwitchValue();
                 updateTempFanValue();
+                updateTempFanSwitchValue();
                 updateTempFanAutoValue();
                 updateTempFanAllSwitch();
             }
